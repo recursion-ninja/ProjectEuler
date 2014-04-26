@@ -1,0 +1,14 @@
+#169 <-- bit-twiddling h4x! (possible deterministic equation)
+#206 <-- take sqrt of lowest number and increasingly search through squares
+
+Pythagorean Triangles:
+#139,#218,#283
+
+An expected value problem:
+#323
+
+!!! Clean-Up p0017, use logs,	be more verbose
+
+!!! Clean-Up p0019, use enums,	clean up logic
+
+!!! Clean-Up p0025, use logs,	not strings
