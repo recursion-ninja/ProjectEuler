@@ -16,7 +16,7 @@ main = do
   then printHelp name
   else
     let limit = getLimit args 
-    in  print . take limit $ show . sum . map read $ lines $ info
+    in  putStrLn . take limit . show . sum . map read . lines $ info
 
 getLimit :: [String] -> Int
 getLimit args =
