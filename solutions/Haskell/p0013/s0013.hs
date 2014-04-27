@@ -32,6 +32,6 @@ printHelp name =
   putStrLn ("\n"
          ++ "  Usage: "++name++" <limit>\n"
          ++ "  Reads base 10 integers from STDIN line by line\n"
-         ++ "  calculates the sumation of all integers\n"
-         ++ "  and displays the first <limit> digits of the sum\n"
+         ++ "  calculates the sumation of all integers and\n"
+         ++ "  displays the first <limit> digits of the sum\n"
          ++ "    <limit>  :: Int (10)\n")
