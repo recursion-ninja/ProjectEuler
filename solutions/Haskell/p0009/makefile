@@ -1,5 +1,6 @@
 language = hs
-number   = 0009
+dir      = $(shell basename $(CURDIR))
+number   = $(shell echo $(dir) | cut -d'p' -f 2)
 optimize = -O2
 linking  = --make
 warnings = -Wall -W -w
