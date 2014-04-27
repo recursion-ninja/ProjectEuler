@@ -1,6 +1,14 @@
-all: ans-0003
+language = hs
+number   = 0003
+optimize = -O2
+linking  = --make
+warnings = -Wall -W -w
+name     = ans-$(number)
+source   = s$(number).$(language)
 
-ans-0003: s0003.hs
-	ghc -O3 --make s0003.hs -o ans-0003 -Wall -W -w
+all: $(name)
+
+$(name): $(source)
+	ghc $< -o $@ $(optimize) $(linking) $(warnings)
 clean:
 	rm *.o *.hi
