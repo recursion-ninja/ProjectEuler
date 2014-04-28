@@ -18,8 +18,8 @@ main = do
 
 getTarget :: [String] -> Integer
 getTarget args =
-  if   length args  > 0
-  then read $ args !! 0 
+  if   not  $ null args
+  then read $ head args 
   else 10001 --default
 
 printHelpParamPassed :: [String] -> Bool
