@@ -15,8 +15,8 @@ main = do
 
 getLimit :: [String] -> Int
 getLimit args =
-  if   length args  > 0
-  then read $ args !! 0 
+  if   not  $ null args
+  then read $ head args 
   else 10 --default
 
 printHelpParamPassed :: [String] -> Bool
