@@ -17,13 +17,13 @@ main = do
   then printHelp name
   else 
     let digits    = getDigits args
-        cleanData = map digitToInt $ filter (isDigit) info
+        cleanData = map digitToInt $ filter isDigit info
     in  print . maximum $ map (product . take 5) (tails cleanData)
 
 getDigits :: [String] -> Integer
 getDigits args =
-  if   length args  > 0
-  then read $ args !! 0 
+  if   not  $ null args
+  then read $ head args 
   else 5 --default
 
 printHelpParamPassed :: [String] -> Bool
