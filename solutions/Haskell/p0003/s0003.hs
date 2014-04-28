@@ -14,12 +14,12 @@ main = do
   name <- getProgName
   if   printHelpParamPassed args
   then printHelp name
-  else print . fst . last . sort . factorise $ getTarget args
+  else print . fst . maximum . factorise $ getTarget args
 
 getTarget :: [String] -> Integer
 getTarget args =
-  if   length args  > 0
-  then read $ args !! 0 
+  if   not  $ null args
+  then read $ head args 
   else 600851475143 --default
 
 printHelpParamPassed :: [String] -> Bool
