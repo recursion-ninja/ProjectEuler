@@ -20,14 +20,14 @@ main = do
 
 getLower :: [String] -> Int
 getLower args =
-  if   length args  > 0
-  then max 1 (read $ args !! 0)
+  if   not $  null args
+  then max 1 (read $ head args)
   else 1 --default
 
 getUpper :: [String] -> Int
 getUpper args =
-  if   length args  > 0
-  then min 1 (read $ args !! 0 )
+  if   length args > 1
+  then max 1 (read $ args !! 1)
   else 20 --default
 
 printHelpParamPassed :: [String] -> Bool
