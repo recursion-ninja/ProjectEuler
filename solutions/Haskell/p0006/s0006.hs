@@ -21,8 +21,8 @@ main = do
 
 getLimit :: [String] -> Integer
 getLimit args =
-  if   length args  > 0
-  then read $ args !! 0 
+  if   not  $ null args
+  then read $ head args 
   else 100 --default
 
 reducedClosedForm :: Integer -> Integer
@@ -38,4 +38,4 @@ printHelp name =
          ++ "  Usage: "++name++" <limit>\n"
          ++ "  Calculates the square of the sum of natural numbers from 0 to <limit>\n"
          ++ "  minus the sum of the squares of natural numbers from 0 to <limit>\n"
-         ++ "    <limit>  :: Int (100)\n")
+         ++ "    <limit>  :: Integer (100)\n")
