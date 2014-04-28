@@ -20,8 +20,8 @@ main = do
 
 getLimit :: [String] -> Integer
 getLimit args =
-  if   length args  > 0
-  then read $ args !! 0 
+  if   not  $ null args
+  then read $ head args
   else 4000000 --default
 
 fibonacciSequence :: [Integer]
