@@ -21,8 +21,8 @@ main = do
 
 getTarget :: [String] -> Integer
 getTarget args =
-  if   length args  > 0
-  then read $ args !! 0 
+  if   not  $ null args
+  then read $ head args 
   else 1000 --default
 
 printAnswer :: Integer -> IO ()
@@ -63,7 +63,7 @@ appendProduct =
 
 prettyPrint :: [([Integer],Integer)] -> String
 prettyPrint list = 
-  foldl (\x (y,z) -> x ++ (show y)++" : "++(show z)++"\n") "" $
+  foldl (\x (y,z) -> x ++  show y ++" : "++ show z ++"\n") "" $
   sortBy (\(w,x) (y,z) -> compare z x) list
 
 printHelpParamPassed :: [String] -> Bool

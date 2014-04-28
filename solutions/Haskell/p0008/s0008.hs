@@ -18,9 +18,9 @@ main = do
   else 
     let digits    = getDigits args
         cleanData = map digitToInt $ filter isDigit info
-    in  print . maximum $ map (product . take digits) (tails cleanData)
+    in  print . maximum . map (product . take digits) $ tails cleanData
 
-getDigits :: [String] -> Integer
+getDigits :: [String] -> Int
 getDigits args =
   if   not  $ null args
   then read $ head args 
