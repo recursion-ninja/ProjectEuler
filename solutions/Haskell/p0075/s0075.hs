@@ -9,12 +9,12 @@
  - And return quantity of matching matching groups
  -}
 
-import System.Environment
-import Data.List
 import Data.Char
+import Data.List
 import Data.Ord
 import Text.Regex
 import Text.Regex.Base.RegexLike
+import System.Environment
 
 main = do
   args <- getArgs
@@ -38,15 +38,15 @@ printHelp name =
 
 printAnswer :: [String] -> IO ()
 printAnswer args =
-  print . length . (correctQuantity target) . groupPerimeters . perimetersBoundedByLimit $ limit
+  print . length . correctQuantity target . groupPerimeters . perimetersBoundedByLimit $ limit
   where
     limit  = getLimit  args
     target = getTarget args
 
 getLimit :: [String] -> Integer
 getLimit args =
-  if   length args  > 0
-  then read $ args !! 0 
+  if   not  $ null args
+  then read $ head args 
   else 1500000 --default
 
 getTarget :: [String] -> Int
@@ -66,7 +66,7 @@ groupPerimeters =
 perimetersBoundedByLimit :: Integer -> [Integer]
 perimetersBoundedByLimit limit 
   | limit < 12 = [] 
-  | otherwise  = concatMap (getPerimetersOfMultiples 1) . map (snd) . concat $ primatives
+  | otherwise  = concatMap (getPerimetersOfMultiples 1) . map snd . concat $ primatives
   where
     primatives = takeWhile (not.null) $ iterate nextTier [([3,4,5],12)]
     nextTier   = concatMap (filter ((<=limit).snd).triangleMatrixMul)
