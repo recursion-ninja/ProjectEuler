@@ -22,13 +22,13 @@ main = do
 
 getLimit :: [String] -> Integer
 getLimit args =
-  if   length args  > 0
-  then read $ args !! 0
+  if   not  $ null args
+  then read $ head args
   else 1000 --default
 
 getDivisors :: [String] -> [Integer]
 getDivisors args =
-  if   length args > 1 && (not $ null list)
+  if   length args > 1 && (not . null) list
   then map read list
   else [3,5] --default
     where {-- Less fragile then standard read --} 
