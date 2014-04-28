@@ -14,7 +14,7 @@ main = do
   name <- getProgName
   if   printHelpParamPassed args
   then printHelp name
-  else print . fst . maximum . factorise $ getTarget args
+  else print . maximum . map fst . factorise $ getTarget args
 
 getTarget :: [String] -> Integer
 getTarget args =
