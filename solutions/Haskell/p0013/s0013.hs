@@ -1,8 +1,3 @@
-{--
- - Notes:
- - Use library packages like a (> PRO <)
- -}
-
 import System.Environment
 import Data.List
 import Text.Regex
