@@ -1,8 +1,3 @@
-{--
- - Notes:
- - Use library packages like a pro
- -}
-
 import System.Environment
 import Data.List
 import Text.Regex
@@ -29,9 +24,10 @@ printHelpParamPassed =
 
 printHelp name =
   putStrLn ("\n"
-         ++ "  Usage: "++name++" <target>\n"
-         ++ "  Calculates the largest prime factor of <target>\n"
-         ++ "    <target>  :: Int (600851475143)\n")
+         ++ "  Usage: "++name++" <digits>\n"
+         ++ "  Calculates the largest palindrome which is\n"
+         ++ "  the product of two <digits> digit number\n"
+         ++ "    <digits>  :: Int (3)\n")
 
 isPalindrome :: Int -> Bool
 isPalindrome n = reverse (show n) == show n
