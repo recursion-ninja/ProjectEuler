@@ -48,3 +48,4 @@ printHelp name =
          ++ "  Usage: "++name++" <target>\n"
          ++ "  Calculates the largest prime factor of <target>\n"
          ++ "    <target>  :: Int (600851475143)\n")
+
