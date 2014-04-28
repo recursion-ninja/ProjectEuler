@@ -9,6 +9,7 @@
  - And return quantity of matching matching groups
  -}
 
+import Control.Applicative
 import Data.Char
 import Data.List
 import Data.Ord
@@ -74,7 +75,8 @@ perimetersBoundedByLimit limit
     -- into three distinct new primative triples
     -- via left multiplication of each matrix
     triangleMatrixMul (t,p) =
-      map (\x -> (x, sum x)) $ map (map (sum . zipWith (*) t))
+--      map ((\x -> (x, sum x)) . map (sum . zipWith (*) t))
+      map (((,) <$> id <*> sum) . map (sum . zipWith (*) t))
       [[[ 1,-2, 2],
         [ 2,-1, 2],
         [ 2,-2, 3]],
@@ -84,6 +86,7 @@ perimetersBoundedByLimit limit
                            [[-1, 2, 2],
                             [-2, 1, 2],
                             [-2, 2, 3]]]
+
     getPerimetersOfMultiples x p
       | newPerimeter <= limit = newPerimeter : getPerimetersOfMultiples (succ x) p
       | otherwise = []
