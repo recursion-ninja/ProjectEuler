@@ -8,10 +8,10 @@
 
 import System.Environment
 import Data.List
-import Data.Char
 import Text.Regex
 import Text.Regex.Base.RegexLike
 
+main :: IO ()
 main = do
   args <- getArgs
   name <- getProgName
@@ -24,6 +24,20 @@ getTarget args =
   if   not  $ null args
   then read $ head args 
   else 1000 --default
+
+printHelpParamPassed :: [String] -> Bool
+printHelpParamPassed =
+  any (match $ mkRegex "-+[hH](elp)?")
+
+printHelp :: String -> IO ()
+printHelp name =
+  putStrLn ("\n"
+         ++ "  Usage: "++name++" <target>\n"
+         ++ "  Calculates the product of the sides of all\n"
+         ++ "  pythagorean triples with a perimeter of <target>\n"
+         ++ "    <target> :: Integer (1000)\n")
+
+{-!-}
 
 printAnswer :: Integer -> IO ()
 printAnswer =
@@ -63,16 +77,5 @@ appendProduct =
 
 prettyPrint :: [([Integer],Integer)] -> String
 prettyPrint list = 
-  foldl (\x (y,z) -> x ++  show y ++" : "++ show z ++"\n") "" $
-  sortBy (\(w,x) (y,z) -> compare z x) list
-
-printHelpParamPassed :: [String] -> Bool
-printHelpParamPassed =
-  any (match $ mkRegex "-+[hH](elp)?")
-
-printHelp name =
-  putStrLn ("\n"
-         ++ "  Usage: "++name++" <target>\n"
-         ++ "  Calculates the product of the sides of all\n"
-         ++ "  pythagorean triples with a perimeter of <target>\n"
-         ++ "    <target> :: Integer (1000)\n")
+  foldl (\x (y,z) -> x ++  show y ++" : "++ show z ++"\n") ""
+  $ sortBy (\(_,x) (_,z) -> compare z x) list
