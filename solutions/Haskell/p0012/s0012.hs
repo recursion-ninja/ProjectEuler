@@ -37,5 +37,5 @@ minTriangleNumberAtLeastDivisors :: Int -> Integer
 minTriangleNumberAtLeastDivisors limit =
   fst . head $ dropWhile ((<=limit).snd) [ (x, divisorCount x) | x <- triangleNumbers ]
   where
-    divisorCount    = product . map ((+1).snd) . factorise' 
+    divisorCount    = product . map (succ.snd) . factorise' 
     triangleNumbers = scanl1 (+) [1..]
