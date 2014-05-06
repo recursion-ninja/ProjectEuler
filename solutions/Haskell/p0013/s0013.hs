@@ -1,8 +1,8 @@
 import System.Environment
-import Data.List
 import Text.Regex
 import Text.Regex.Base.RegexLike
 
+main :: IO ()
 main = do
   args <- getArgs
   name <- getProgName
@@ -11,7 +11,7 @@ main = do
   then printHelp name
   else
     let limit = getLimit args 
-    in  putStrLn . take limit . show . sum . map read . lines $ info
+    in  putStrLn . prefix limit $ sumAll info
 
 getLimit :: [String] -> Int
 getLimit args =
@@ -23,6 +23,7 @@ printHelpParamPassed :: [String] -> Bool
 printHelpParamPassed =
   any (match $ mkRegex "-+[hH](elp)?")
 
+printHelp :: String -> IO ()
 printHelp name =
   putStrLn ("\n"
          ++ "  Usage: "++name++" <limit>\n"
@@ -30,3 +31,11 @@ printHelp name =
          ++ "  calculates the sumation of all integers and\n"
          ++ "  displays the first <limit> digits of the sum\n"
          ++ "    <limit>  :: Int (10)\n")
+
+{-!-}
+
+sumAll :: String -> Integer
+sumAll = sum . map read . lines
+
+prefix :: Int -> Integer -> String
+prefix lim = take lim . show 
