@@ -11,7 +11,7 @@ main = do
   then printHelp name
   else
     let limit = getLimit args 
-    in  print $ minTriangleNumberAtLeastDivisors limit
+    in  print $ minTriangleNumberWithAtLeastDivisors limit
 
 getLimit :: [String] -> Int
 getLimit args =
@@ -33,8 +33,8 @@ printHelp name =
 
 {-!-}
 
-minTriangleNumberAtLeastDivisors :: Int -> Integer
-minTriangleNumberAtLeastDivisors limit =
+minTriangleNumberWithAtLeastDivisors :: Int -> Integer
+minTriangleNumberWithAtLeastDivisors limit =
   fst . head $ dropWhile ((<=limit).snd) [ (x, divisorCount x) | x <- triangleNumbers ]
   where
     divisorCount    = product . map (succ.snd) . factorise' 
