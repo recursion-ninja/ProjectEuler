@@ -1,14 +1,15 @@
+import System.Environment        (getArgs,getProgName)
+import Data.List                 (tails)
+import Data.Char                 (digitToInt,isDigit)
+import Text.Regex                (mkRegex)
+import Text.Regex.Base.RegexLike (match)
+
 {--
  - Notes:
  - Straight Forward
  -}
 
-import System.Environment
-import Data.List
-import Data.Char
-import Text.Regex
-import Text.Regex.Base.RegexLike
-
+main :: IO ()
 main = do
   args <- getArgs
   name <- getProgName
@@ -30,6 +31,7 @@ printHelpParamPassed :: [String] -> Bool
 printHelpParamPassed =
   any (match $ mkRegex "-+[hH](elp)?")
 
+printHelp :: String -> IO ()
 printHelp name =
   putStrLn ("\n"
          ++ "  Usage: "++name++" <digits>\n"
