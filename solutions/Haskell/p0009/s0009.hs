@@ -1,3 +1,10 @@
+import Control.Applicative ((<$>),(<*>))
+import Data.List (sortBy)
+import Data.Ord  (comparing)
+import System.Environment
+import Text.Regex
+import Text.Regex.Base.RegexLike
+
 {--
  - Notes:
  - Do it correctly!
@@ -6,10 +13,8 @@
  - Then filter based on triples with perimeter exactly equal to limit
  -}
 
-import System.Environment
-import Data.List
-import Text.Regex
-import Text.Regex.Base.RegexLike
+type Tripple        = [Integer]
+type TrippleProduct = (Tripple,Integer)
 
 main :: IO ()
 main = do
@@ -41,13 +46,13 @@ printHelp name =
 
 printAnswer :: Integer -> IO ()
 printAnswer =
-  putStr . prettyPrint . appendProduct . getPythagoreanTriplesOfPerimeter
+  putStr . prettyPrint . map appendProduct . getPythagoreanTriplesOfPerimeter
 
-getPythagoreanTriplesOfPerimeter :: Integer -> [[Integer]]
+getPythagoreanTriplesOfPerimeter :: Integer -> [Tripple]
 getPythagoreanTriplesOfPerimeter perimeter = 
   filter ((==perimeter).sum) $ getPythagoreanTriplesPerimeterBoundedLimit perimeter
 
-getPythagoreanTriplesPerimeterBoundedLimit :: Integer -> [[Integer]]
+getPythagoreanTriplesPerimeterBoundedLimit :: Integer -> [Tripple]
 getPythagoreanTriplesPerimeterBoundedLimit perimeter 
   | perimeter < 12 = [] 
   | otherwise      = concatMap (tMultiples 1) $ concat primatives
@@ -71,11 +76,15 @@ getPythagoreanTriplesPerimeterBoundedLimit perimeter
         then newTriangle : tMultiples (x+1) t
         else []
 
-appendProduct :: [[Integer]] -> [([Integer],Integer)]
-appendProduct = 
-  map (\x -> (x, product x))
+appendProduct :: Tripple -> TrippleProduct
+appendProduct = (,) <$> id <*> product
 
-prettyPrint :: [([Integer],Integer)] -> String
-prettyPrint list = 
-  foldl (\x (y,z) -> x ++  show y ++" : "++ show z ++"\n") ""
-  $ sortBy (\(_,x) (_,z) -> compare z x) list
+prettyPrint :: [TrippleProduct] -> String
+prettyPrint xs
+  | null xs   = "None"
+  | otherwise = foldl1 (++)
+              . map showTripple
+              $ sortBy (comparing snd) xs
+
+showTripple :: TrippleProduct -> String
+showTripple (x,y) =  show x ++ " : " ++ show y ++ "\n"
