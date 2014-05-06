@@ -46,5 +46,5 @@ totalPaths :: Int -> Int -> Integer
 totalPaths rows cols = numerator `div` denominator
   where
     numerator   = factorial (rows + cols)
-    denominator = factorial rows * factorial cols
+    denominator = factorial  rows * factorial cols
     factorial   = product . enumFromTo 1 . fromIntegral
