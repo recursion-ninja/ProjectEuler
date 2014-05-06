@@ -1,9 +1,9 @@
 import System.Environment
-import Data.List
 import Text.Regex
 import Text.Regex.Base.RegexLike
-import Math.NumberTheory.Primes.Factorisation
+import Math.NumberTheory.Primes.Factorisation (factorise')
 
+main :: IO ()
 main = do
   args <- getArgs
   name <- getProgName
