@@ -1,12 +1,14 @@
+import Data.List
+import Data.Map ((!),fromAscList,toList)
+import Data.Ord
+import Prelude
 import System.Environment
 import Text.Regex
 import Text.Regex.Base.RegexLike
-import Data.List
-import Data.Map ((!),Map,fromAscList,toList)
-import Data.Ord
 
 {-- Memotize, but only under the limit --}
 
+main :: IO ()
 main = do
   args <- getArgs
   name <- getProgName
@@ -26,6 +28,7 @@ printHelpParamPassed :: [String] -> Bool
 printHelpParamPassed =
   any (match $ mkRegex "-+[hH](elp)?")
 
+printHelp :: String -> IO ()
 printHelp name =
   putStrLn ("\n"
          ++ "  Usage: "++name++" <limit> \n"
@@ -52,6 +55,6 @@ collatzLengths k = toList lengthMap
       where
         y = collatz x
         collatz n
-          | even n = n `div` 2 
-          | odd  n = n * 3 + 1
+          | even n    = n `div` 2 
+          | otherwise = n * 3 + 1
 
