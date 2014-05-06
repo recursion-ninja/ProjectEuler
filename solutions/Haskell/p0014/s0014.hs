@@ -1,7 +1,6 @@
 import Data.List
 import Data.Map ((!),fromAscList,toList)
 import Data.Ord
-import Prelude
 import System.Environment
 import Text.Regex
 import Text.Regex.Base.RegexLike
