@@ -1,14 +1,14 @@
+import System.Environment
+import Text.Regex
+import Text.Regex.Base.RegexLike
+import Math.NumberTheory.Primes.Sieve
+
 {--
  - Notes:
  - Use library packages like a (> PRO <)
  -}
 
-import System.Environment
-import Data.List
-import Text.Regex
-import Text.Regex.Base.RegexLike
-import Math.NumberTheory.Primes.Sieve
-
+main :: IO ()
 main = do
   args <- getArgs
   name <- getProgName
@@ -28,6 +28,7 @@ printHelpParamPassed :: [String] -> Bool
 printHelpParamPassed =
   any (match $ mkRegex "-+[hH](elp)?")
 
+printHelp :: String -> IO ()
 printHelp name =
   putStrLn ("\n"
          ++ "  Usage: "++name++" <limit>\n"
