@@ -1,7 +1,7 @@
+import Math.NumberTheory.Primes.Sieve (primes)
 import System.Environment             (getArgs,getProgName)
 import Text.Regex                     (mkRegex)
 import Text.Regex.Base.RegexLike      (match)
-import Math.NumberTheory.Primes.Sieve (primes)
 
 {--
  - Notes:
