@@ -1,9 +1,9 @@
-import Control.Applicative ((<$>),(<*>))
-import Data.List (sortBy)
-import Data.Ord  (comparing)
-import System.Environment
-import Text.Regex
-import Text.Regex.Base.RegexLike
+import Control.Applicative       ((<$>),(<*>))
+import Data.List                 (sortBy)
+import Data.Ord                  (comparing)
+import System.Environment        (getArgs,getProgName)
+import Text.Regex                (mkRegex)
+import Text.Regex.Base.RegexLike (match)
 
 {--
  - Notes:
