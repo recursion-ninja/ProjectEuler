@@ -1,14 +1,14 @@
+import System.Environment        (getArgs,getProgName)
+import Text.Regex                (mkRegex)
+import Text.Regex.Base.RegexLike (match)
+
 {--
  - Notes:
  - Rely on lazy evaluation
  - and generate fibonacci numbers tail recursively
  -}
 
-import System.Environment
-import Data.List
-import Text.Regex
-import Text.Regex.Base.RegexLike
-
+main :: IO ()
 main = do
   args <- getArgs
   name <- getProgName
@@ -24,17 +24,22 @@ getLimit args =
   then read $ head args
   else 4000000 --default
 
-fibonacciSequence :: [Integer]
-fibonacciSequence = 
-  0 : 1 : zipWith (+) fibonacciSequence (tail fibonacciSequence)
-
 printHelpParamPassed :: [String] -> Bool
 printHelpParamPassed =
   any (match $ mkRegex "-+[hH](elp)?")
 
+printHelp :: String -> IO ()
 printHelp name =
   putStrLn ("\n"
          ++ "  Usage: "++name++" <limit>\n"
          ++ "  Calculates the sum of all even fibonacci numbers\n"
          ++ "  whose value is less then <limit>\n"
          ++ "    <limit>    :: Int (1000)\n")
+
+{-!-}
+
+fibonacciSequence :: [Integer]
+fibonacciSequence = 
+  0 : 1 : zipWith (+) fibonacciSequence (tail fibonacciSequence)
+
+
