@@ -1,14 +1,14 @@
+import Math.NumberTheory.Primes.Counting (nthPrime)
+import System.Environment                (getArgs,getProgName)
+import Text.Regex                        (mkRegex)
+import Text.Regex.Base.RegexLike         (match)
+
 {--
  - Notes:
  - Use library packages like a pro
  -}
 
-import System.Environment
-import Data.List
-import Text.Regex
-import Text.Regex.Base.RegexLike
-import Math.NumberTheory.Primes.Counting
-
+main :: IO ()
 main = do
   args <- getArgs
   name <- getProgName
@@ -26,6 +26,7 @@ printHelpParamPassed :: [String] -> Bool
 printHelpParamPassed =
   any (match $ mkRegex "-+[hH](elp)?")
 
+printHelp :: String -> IO ()
 printHelp name =
   putStrLn ("\n"
          ++ "  Usage: "++name++" <target>\n"
