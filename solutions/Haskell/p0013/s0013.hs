@@ -1,6 +1,6 @@
-import System.Environment
-import Text.Regex
-import Text.Regex.Base.RegexLike
+import System.Environment             (getArgs,getProgName)
+import Text.Regex                     (mkRegex)
+import Text.Regex.Base.RegexLike      (match)
 
 main :: IO ()
 main = do

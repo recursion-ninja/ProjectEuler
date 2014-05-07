@@ -1,9 +1,9 @@
-import Data.List
-import Data.Map ((!),fromAscList,toList)
-import Data.Ord
-import System.Environment
-import Text.Regex
-import Text.Regex.Base.RegexLike
+import Data.List                      (maximumBy)
+import Data.Map                       ((!),fromAscList,toList)
+import Data.Ord                       (comparing)
+import System.Environment             (getArgs,getProgName)
+import Text.Regex                     (mkRegex)
+import Text.Regex.Base.RegexLike      (match)
 
 {-- Memotize, but only under the limit --}
 
