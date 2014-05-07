@@ -1,3 +1,11 @@
+import Control.Applicative       ((<$>),(<*>))
+import Control.Arrow             ((***))
+import Data.List                 (delete)
+import Data.Set                  (elems, fromList)
+import System.Environment        (getArgs,getProgName)
+import Text.Regex                (mkRegex,splitRegex)
+import Text.Regex.Base.RegexLike (match)
+
 {--
  - Use Inclusion-Exclusion principle
  - Along with closed form calculation
@@ -5,14 +13,7 @@
  - with arbirtarily many divisors
  --}
 
-import Control.Applicative
-import Control.Arrow
-import Data.List
-import Data.Set (elems, fromList)
-import System.Environment
-import Text.Regex
-import Text.Regex.Base.RegexLike
-
+main :: IO ()
 main = do
   args <- getArgs
   name <- getProgName
@@ -31,7 +32,7 @@ getDivisors args =
   if   length args > 1 && (not . null) list
   then map read list
   else [3,5] --default
-    where {-- Less fragile then standard read --} 
+    where -- Less fragile then standard read 
       list = parseList $ args !! 1
       parseList = filter (not . null) . splitRegex (mkRegex ",") . delete '[' . delete ']'
 
@@ -48,7 +49,7 @@ printHelp name =
          ++ "    <limit>    :: Int (1000)\n"
          ++ "    <divisors> :: CSV Int List (3,5)\n")
 
-{-|-}
+{-!-}
 
 eulerP0001 :: Integral a => a -> [a] -> a
 eulerP0001 l xs =
@@ -70,7 +71,7 @@ inclusionExclusion xs =
       choose :: [b] -> Int -> [[b]]
       _      `choose` 0 = [[]]
       []     `choose` _ =  []
-      (x:xs) `choose` k =  (x:) `fmap` (xs `choose` (k-1)) ++ xs `choose` k
+      (y:ys) `choose` k =  (y:) `fmap` (ys `choose` (k-1)) ++ ys `choose` k
 
 both :: (a->b) -> (a,a) -> (b,b)
 both f = f *** f
