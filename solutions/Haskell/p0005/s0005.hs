@@ -1,13 +1,13 @@
+import System.Environment        (getArgs,getProgName)
+import Text.Regex                (mkRegex)
+import Text.Regex.Base.RegexLike (match)
+
 {--
  - Notes:
- - alser is least common multiple of all numbers in range
+ - Answer is least common multiple of all numbers in range
  -}
 
-import System.Environment
-import Data.List
-import Text.Regex
-import Text.Regex.Base.RegexLike
-
+main :: IO ()
 main = do
   args <- getArgs
   name <- getProgName
@@ -34,6 +34,7 @@ printHelpParamPassed :: [String] -> Bool
 printHelpParamPassed =
   any (match $ mkRegex "-+[hH](elp)?")
 
+printHelp :: String -> IO ()
 printHelp name =
   putStrLn ("\n"
          ++ "  Usage: "++name++" <lower> <upper>\n"
