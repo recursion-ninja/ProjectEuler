@@ -1,3 +1,9 @@
+import Control.Applicative       ((<$>),(<*>))
+import Data.List                 (group,sort)
+import System.Environment        (getArgs,getProgName)
+import Text.Regex                (mkRegex)
+import Text.Regex.Base.RegexLike (match)
+
 {--
  - Notes:
  - Do it correctly!
@@ -9,14 +15,7 @@
  - And return quantity of matching matching groups
  -}
 
-import Control.Applicative
-import Data.Char
-import Data.List
-import Data.Ord
-import Text.Regex
-import Text.Regex.Base.RegexLike
-import System.Environment
-
+main :: IO ()
 main = do
   args <- getArgs
   name <- getProgName
