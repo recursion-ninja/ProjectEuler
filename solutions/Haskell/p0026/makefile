@@ -11,6 +11,6 @@ source   = s$(number).$(language)
 all: $(name)
 
 $(name): $(source)
-	ghc $< -o $@ $(optimize) $(linking) $(warnings) $(sanity) -prof
+	ghc $< -o $@ $(optimize) $(linking) $(warnings) $(sanity)
 clean:
 	rm *.o *.hi
