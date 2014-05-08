@@ -7,6 +7,13 @@ import System.Environment        (getArgs,getProgName)
 import Text.Regex                (mkRegex)
 import Text.Regex.Base.RegexLike (match)
 
+{--
+ - Only prime numbers will have longest repeating fractions
+ - Note the maximum sequence length for n is n-1
+ - Look from upperbound until find n S.T. len(n) = n-1
+ - Take the makimum of that list
+ -}
+
 type UnitFractionLength = (Int,Int)
 
 main :: IO ()
@@ -32,12 +39,11 @@ printHelpParamPassed =
 printHelp :: String -> IO ()
 printHelp name =
   putStrLn ("\n"
-         ++ "  Usage: "++name++" <rows> <cols> \n"
-         ++ "  Calculates the sum of number of paths which exist \n"
-         ++ "  to travel from one corner to the opposite corner  \n"
-         ++ "  of a <rows> by <cols> grid. \n"
-         ++ "    <rows>  :: Int (20)\n"
-         ++ "    <cols>  :: Int (20)\n")
+         ++ "  Usage: "++name++" <limit> \n"
+         ++ "  Calculates the denominator of the unit fraction \n"
+         ++ "  with the longest repeaing decimal expansion  \n"
+         ++ "  with the denomination less than <limit>. \n"
+         ++ "    <limit>  :: Int (1000)\n"
 
 {-!-}
 
@@ -56,7 +62,7 @@ maxUnitFractionLength =
 unitFractionLengths :: Int -> [UnitFractionLength]
 unitFractionLengths lim =
    map getUnitFractionLength . reverse
-  . takeWhile (<=lim) $ map fromIntegral primes
+  . takeWhile (<lim) $ map fromIntegral primes
 
 getUnitFractionLength :: Int -> UnitFractionLength
 getUnitFractionLength x = 
