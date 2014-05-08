@@ -1,11 +1,13 @@
+import Control.Applicative       ((<$>),(<*>))
 import Data.List                 (maximumBy)
 import Data.Ord                  (comparing)
-import Data.Sequence             (adjust,fromList,index,Seq)
+import Data.Sequence             (adjust,fromList,index)
+import Math.NumberTheory.Primes  (primes)
 import System.Environment        (getArgs,getProgName)
 import Text.Regex                (mkRegex)
 import Text.Regex.Base.RegexLike (match)
 
-type FractionExpansion = (Int,([Int],[Int]))
+type UnitFractionLength = (Int,Int)
 
 main :: IO ()
 main = do
@@ -15,9 +17,7 @@ main = do
   then printHelp name
   else
     let limit = getLimit args
-    in  putStrLn . showFractionExpansion
-      . maximumBy (comparing (length.snd.snd))
-      $ fractionExpansions limit
+    in  print . fst $ maxUnitFractionLength limit
 
 getLimit :: [String] -> Int
 getLimit args =
@@ -41,35 +41,33 @@ printHelp name =
 
 {-!-}
 
-fractionExpansions :: Int -> [FractionExpansion]
-fractionExpansions =
-  map fractionExpansion . enumFromTo 2
+maxUnitFractionLength :: Int -> UnitFractionLength
+maxUnitFractionLength =
+  maximumBy (comparing snd) . takePossible .unitFractionLengths
   where
+    takePossible xs
+      | null xs    = []
+      | breakCmp y = [y]
+      | otherwise  = y : takePossible ys 
+      where
+        (y:ys)   = xs
+        breakCmp = (==) <$> fst <*> (succ.snd)
+
+unitFractionLengths :: Int -> [UnitFractionLength]
+unitFractionLengths lim =
+   map getUnitFractionLength . reverse
+  . takeWhile (<=lim) $ map fromIntegral primes
+
+getUnitFractionLength :: Int -> UnitFractionLength
+getUnitFractionLength x = 
+  getUnitFractionLength' 1 [] (cleanTally x) x
+  where 
     cleanTally = fromList . flip replicate True
-    fractionExpansion :: Int -> FractionExpansion
-    fractionExpansion x = fractionExpansion' 1 [] (cleanTally x) x
-    fractionExpansion' :: Int -> [Int] -> Seq Bool -> Int -> FractionExpansion
-    fractionExpansion' remainder stack tally denom
-      | r == 0             = (denom,(stack,[]))
-      | (tally' `index` r) = (denom,answer r stack [])
-      | otherwise          = fractionExpansion' r (q:stack) tally' denom 
+    getUnitFractionLength' remainder stack tally denom
+      | r == 0           = (denom,0)
+      | tally' `index` r = (denom,reps)
+      | otherwise        = getUnitFractionLength' r (q:stack) tally' denom 
       where
         (q,r)  = (remainder * 10) `quotRem` denom
-        tally' = adjust not r tally 
-        answer e xs ys
-          | null xs   = ([],  ys)
-          | z == e    = (zs,z:ys)
-          | otherwise = answer e zs (z:ys) 
-          where
-            (z:zs) = xs
-
-showFractionExpansion :: FractionExpansion -> String
-showFractionExpansion (z,(xs,ys)) =
-      "1/"
-   ++ (show z)
-   ++ " = 0."
-   ++ (concatMap show xs)
-   ++ "("
-   ++ (concatMap show ys)
-   ++ ")"
-
+        tally' = adjust not r tally
+        reps   = length $ takeWhile (/=r) stack
