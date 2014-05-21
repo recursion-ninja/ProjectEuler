@@ -1,7 +1,7 @@
 import Data.List                 (maximumBy)
 import Data.Maybe                (isJust,fromJust)
 import Data.Ord                  (comparing)
-import Data.Sequence             (adjust,fromList,index,Seq)
+import Data.Sequence             (fromList,index,update,Seq)
 import Math.NumberTheory.Powers  (powerMod)
 import Math.NumberTheory.Primes  (primes,factorise')
 import System.Environment        (getArgs,getProgName)
@@ -70,18 +70,20 @@ largestPrimativeRoot :: Int -> Int -> Maybe Int
 largestPrimativeRoot base limit
   | base  == 0          = Just 0
   | base  == 1          = Just 1
+  | base  <  0          = largestPrimativeRoot (abs base) limit
   | limit <  0          = largestPrimativeRoot base $ abs limit
   | null primativeRoots = Nothing
-  | otherwise           = Just maxLength
-  where 
-    maxLength      = pred $ head primativeRoots
+  | otherwise           = Just maxExpansion
+  where
+    maxExpansion   = head primativeRoots
     primativeRoots = filter (isPrimativeRoot base) . reverse
                    . takeWhile (<limit) $ map fromIntegral primes
 
 isPrimativeRoot :: Int -> Int -> Bool
 isPrimativeRoot base n = isPrimative
   where
-    isPrimative = null $ filter (==1) powers
+    isPrimative = isCoprime && (null $ filter (==1) powers)
+    isCoprime   = gcd base n == 1
     powers      = map ((~^~) powerMod b' n' . (div phi)) factors
     factors     = map fst $ factorise' phi
     phi         = pred n'
@@ -91,23 +93,25 @@ isPrimativeRoot base n = isPrimative
     (.:)        = (.).(.)
 
 naiveExpansions :: Int -> Int -> [FractionExpansion]
-naiveExpansions base = map (fractionExpansion base) . enumFromTo 2
+naiveExpansions base = map (fractionExpansion base) . enumFromTo 1 . pred
 
 fractionExpansion :: Int -> Int -> FractionExpansion
 fractionExpansion base x = fractionExpansion' 1 [] (cleanTally x) x
   where
-    cleanTally = fromList . flip replicate True
-    fractionExpansion' :: Int -> [Int] -> Seq Bool -> Int -> FractionExpansion
-    fractionExpansion' remainder stack tally denom
-      | r == 0             = (denom,(stack,[]))
-      | (tally' `index` r) = (denom,answer r stack [])
-      | otherwise          = fractionExpansion' r (q:stack) tally' denom 
+    cleanTally = fromList . flip replicate (-1)
+    fractionExpansion' :: Int -> [Int] -> Seq Int -> Int -> FractionExpansion
+    fractionExpansion' remainder stack seen denom
+      | r == 0    = (denom,(reverse $ q:stack, []))
+      | isCycle   = (denom, answer q (stack) [])
+      | otherwise = fractionExpansion' r (q:stack) seen' denom 
       where
-        (q,r)  = (remainder * base) `quotRem` denom
-        tally' = adjust not r tally 
+        (q,r)   = (remainder * base) `quotRem` denom
+        seen'   = update r q seen
+        isCycle = seen `index` r == q
         answer e xs ys
-          | null xs   = ([],  ys)
-          | z == e    = (zs,z:ys)
-          | otherwise = answer e zs (z:ys) 
-          where
-            (z:zs) = xs
+         | null xs   = ([],  ys)
+         | z == e    = (reverse zs, z:ys)
+         | otherwise = answer e zs (z:ys) 
+         where
+           (z:zs) = xs
+
