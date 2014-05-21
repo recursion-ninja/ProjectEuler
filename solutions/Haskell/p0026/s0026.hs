@@ -14,6 +14,10 @@ import Text.Regex.Base.RegexLike (match)
  - Note if n is prime and b is a primative root of p
  - Then the repeating decimal expansion length is p-1
  - Look from upperbound until we find n S.T. len(n) = n-1
+ - If we fail to find such an n,
+ - Then exaustively search with the naive algorithm
+ - This is ok because failing to find such an n
+ - Implies the upper bound is small
  -}
 
 type FractionExpansion = (Int,([Int],[Int]))
@@ -27,7 +31,7 @@ main = do
   else
     let limit = getLimit args
         base  = getBase  args
-    in  print . fst $ maxFractionExpansion base limit
+    in  putStrLn . showAnswer $ maxFractionExpansion base limit
 
 getLimit :: [String] -> Int
 getLimit args =
@@ -45,6 +49,11 @@ printHelpParamPassed :: [String] -> Bool
 printHelpParamPassed =
   any (match $ mkRegex "-+[hH](elp)?")
 
+showAnswer :: Maybe FractionExpansion -> String
+showAnswer x
+  | isJust x  = show . fst $ fromJust x
+  | otherwise = "(none)"
+
 printHelp :: String -> IO ()
 printHelp name =
   putStrLn ("\n"
@@ -57,20 +66,19 @@ printHelp name =
 
 {-!-}
 
-maxFractionExpansion :: Int -> Int -> FractionExpansion
+maxFractionExpansion :: Int -> Int -> Maybe FractionExpansion
 maxFractionExpansion base limit
-  | isJust root = fractionExpansion base $ fromJust root
-  | otherwise   = biggest
+  | isJust root     = Just . fractionExpansion base $ fromJust root
+  | not $ null list = Just biggest
+  | otherwise       = Nothing
   where
     root    = largestPrimativeRoot base limit
-    biggest = maximumBy (comparing (length.snd.snd)) 
-            $ naiveExpansions base limit
+    biggest = maximumBy (comparing (length.snd.snd)) list
+    list    = naiveExpansions base limit
 
 largestPrimativeRoot :: Int -> Int -> Maybe Int
 largestPrimativeRoot base limit
-  | base  == 0          = Just 0
-  | base  == 1          = Just 1
-  | base  <  0          = largestPrimativeRoot (abs base) limit
+  | base  <= 1          = Nothing
   | limit <  0          = largestPrimativeRoot base $ abs limit
   | null primativeRoots = Nothing
   | otherwise           = Just maxExpansion
@@ -93,7 +101,10 @@ isPrimativeRoot base n = isPrimative
     (.:)        = (.).(.)
 
 naiveExpansions :: Int -> Int -> [FractionExpansion]
-naiveExpansions base = map (fractionExpansion base) . enumFromTo 1 . pred
+naiveExpansions base limit
+  | base  <= 1 = []
+  | limit <= 1 = []
+  | otherwise  = map (fractionExpansion base) . enumFromTo 1 $ pred limit
 
 fractionExpansion :: Int -> Int -> FractionExpansion
 fractionExpansion base x = fractionExpansion' 1 [] (cleanTally x) x
