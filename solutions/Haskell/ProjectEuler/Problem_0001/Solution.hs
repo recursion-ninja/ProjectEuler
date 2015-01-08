@@ -4,6 +4,7 @@ module ProjectEuler.Problem_0001.Solution
 
 import Control.Applicative ((<$>),(<*>))
 import Control.Arrow       ((***))
+import Data.List           (foldl1')
 import Data.Set            (elems, fromList)
 
 {--
@@ -14,12 +15,18 @@ import Data.Set            (elems, fromList)
  --}
 
 solution :: Integral a => a -> [a] -> a
-solution limit divisors =
-  uncurry (-) $ getMinuendSubtrahend (limit-1) (reduce . elems $ fromList divisors)
+solution limit divisors
+  |  limit < 1
+  || null divisors' = 0
+  |  otherwise = uncurry (-) $ getMinuendSubtrahend (limit-1) (reduce . elems $ fromList divisors')
+  where divisors' = filter (>0) divisors
 
 getMinuendSubtrahend :: (Integral a) => a -> [a] -> (a,a)
 getMinuendSubtrahend l =
-   both (sum . map (naturalSumModulo l . product)) . inclusionExclusion
+   both (sum . map (naturalSumModulo l . multiple)) . inclusionExclusion
+
+multiple :: Integral a => [a] -> a
+multiple = foldl1' lcm
 
 inclusionExclusion :: [b] -> ([[b]],[[b]])
 inclusionExclusion xs =
@@ -40,9 +47,8 @@ both f = f *** f
 
 reduce :: (Integral a) => [a] -> [a]
 reduce []     = []
-reduce (x:xs) = (x:) . reduce $ filter ((/=0).mod x) xs
+reduce (x:xs) = (x:) . reduce $ filter ((/=0).(`mod` x)) xs
 
 naturalSumModulo :: (Integral a) => a -> a -> a
 naturalSumModulo l x = x*n*(n+1) `div` 2
   where n = l `div` x
-
