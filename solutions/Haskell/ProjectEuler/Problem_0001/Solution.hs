@@ -2,56 +2,67 @@ module ProjectEuler.Problem_0001.Solution
  ( solution
  ) where
 
-import Control.Applicative ((<$>),(<*>))
 import Control.Arrow       ((***))
-import Data.List           (foldl1')
-import Data.Set            (elems, fromList)
+import Data.List           (foldl1',partition)
+import Data.Set            (elems,fromList)
 
 {--
  - Use Inclusion-Exclusion principle
  - Along with closed form calculation
  - To calculate to arbitrarily large bound
  - with arbirtarily many divisors
+ - in `O(2^n)` where `n` is the number of divisors
  --}
 
+-- | Generalized solution to the Project Euler #0001 problem
 solution :: Integral a => a -> [a] -> a
 solution limit divisors
-  |  limit < 1
+  |  (not . positive) limit
   || null divisors' = 0
-  |  otherwise = uncurry (-) $ getMinuendSubtrahend (limit-1) (reduce . elems $ fromList divisors')
+  |  otherwise = uncurry (-) $ minuendSubtrahend (limit-1) (reduce divisors')
   where
-    divisors' = filter (>0) divisors
+    divisors' = filter positive divisors
+    positive  = (>0)
 
-getMinuendSubtrahend :: (Integral a) => a -> [a] -> (a,a)
-getMinuendSubtrahend l
-  = both (sum . map (naturalSumModulo l . multiple))
-  . inclusionExclusion
+-- | Remove duplicates and multiples from integral list
+reduce :: (Integral a) => [a] -> [a]
+reduce xs = filter noneDivides $ uniqueElems xs
+  where
+    uniqueElems      = elems . fromList -- use Set to force uniqueness
+    noneDivides x    = not $ (x `multipleOf`) `any` xs
+    n `multipleOf` m = m < n && n `mod` m == 0 
 
-multiple :: Integral a => [a] -> a
-multiple = foldl1' lcm
+-- | The minuend and subtrahend
+-- | derived from the inclusion/exclusion principle
+-- | which evaluates to the sum of multiples
+minuendSubtrahend :: (Integral a) => a -> [a] -> (a,a)
+minuendSubtrahend n = both total . inclusionExclusion
+  where
+    total     = sum . map summation
+    summation = naturalSumModulo n . leastCommonMultiple
 
-inclusionExclusion :: [b] -> ([[b]],[[b]])
-inclusionExclusion xs
-  = both (concatMap (choose xs))
-  . evenOdd $ (enumFromTo 1 . length) xs
-  where 
-    choose :: [b] -> Int -> [[b]]
-    _      `choose` 0 = [[]]
-    []     `choose` _ =  []
-    (y:ys) `choose` k =  (y:) `fmap` (ys `choose` (k-1)) ++ ys `choose` k
+-- | Least common multiple of an integral list
+leastCommonMultiple :: Integral a => [a] -> a
+leastCommonMultiple = foldl1' lcm
 
-evenOdd :: Integral a => [a] -> ([a],[a])
-evenOdd = (,) <$> filter odd <*> filter even
-
+-- | Map the function across a homogenous arrow
 both :: (a->b) -> (a,a) -> (b,b)
 both f = f *** f
 
-reduce :: (Integral a) => [a] -> [a]
-reduce []     = []
-reduce (x:xs) = (x:) . reduce $ filter (not . isMultiple) xs
-  where
-    isMultiple n  = n `mod` x == 0 
-
+-- | Sum of the multiples of `factor` less then equal to `limit`
 naturalSumModulo :: (Integral a) => a -> a -> a
-naturalSumModulo l x = x*n*(n+1) `div` 2
-  where n = l `div` x
+naturalSumModulo limit factor = factor * n*(n+1) `div` 2
+  where n = limit `div`  factor
+
+-- | Inclusive and exclusive partition of the powerset
+inclusionExclusion :: [b] -> ([[b]],[[b]])
+inclusionExclusion
+  = both (fmap snd)
+  . partition (odd . fst)
+  . nonEmptySubsequences
+
+-- | Set of subsets along with the subset length
+nonEmptySubsequences         :: [a] -> [(Int,[a])]
+nonEmptySubsequences []      =  []
+nonEmptySubsequences (x:xs)  =  (1,[x]) : foldr f [] (nonEmptySubsequences xs)
+  where f (n,ys) zs = (n,ys) : (n+1,x:ys) : zs
