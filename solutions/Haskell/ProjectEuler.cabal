@@ -37,3 +37,7 @@ executable P0001
                , regex-compat ==0.95.*
                , regex-base   ==0.93.*
   
+Test-Suite P0001-Test
+  type:   	 exitcode-stdio-1.0
+  main-is: 	 ProjectEuler/Problem_0001/Test.hs
+  build-depends: base ==4.6.*, containers   ==0.5.*, QuickCheck
