@@ -19,7 +19,6 @@ import qualified ProjectEuler.Problem_0001.Solution as P0001
 main :: IO ()
 main = do
   args <- getArgs
-  name <- getProgName
   if   printHelpParamPassed args
   then printHelp name
   else print $  P0001.solution (getLimit args) (getDivisors args)
@@ -44,10 +43,11 @@ printHelpParamPassed =
   any (match $ mkRegex "-+[hH](elp)?")
 
 printHelp :: String -> IO ()
-printHelp name =
-  putStrLn ("\n"
-         ++ "  Usage: "++name++" <limit> <divisors>\n"
+printHelp = getProgName
+        >>= \name -> putStrLn
+          $ "\n"
+         ++ "  Usage: " ++ name ++ " <limit> <divisors>\n"
          ++ "  Calculates the sum of all natural numbers less then <limit>\n"
          ++ "  and also divisible by a number in <divisors>\n"
          ++ "    <limit>    :: Int (1000)\n"
-         ++ "    <divisors> :: CSV Int List (3,5)\n")
+         ++ "    <divisors> :: CSV Int List (3,5)\n"

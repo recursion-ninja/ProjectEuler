@@ -11,7 +11,7 @@ import Data.Set            (elems,fromList)
  - Along with closed form calculation
  - To calculate to arbitrarily large bound
  - with arbirtarily many divisors
- - in `O(2^n)` where `n` is the number of divisors
+ - in `O(2^n)` time where `n` is the number of divisors
  --}
 
 -- | Generalized solution to the Project Euler #0001 problem
@@ -19,9 +19,10 @@ solution :: Integral a => a -> [a] -> a
 solution limit divisors
   |  (not . positive) limit
   || null divisors' = 0
-  |  otherwise = uncurry (-) $ minuendSubtrahend (limit-1) (reduce divisors')
+  |  otherwise      = minuend - subtrahend 
   where
-    divisors' = filter positive divisors
+    (minuend,subtrahend) = minuendSubtrahend (limit-1) divisors'
+    divisors' = reduce $ filter positive divisors
     positive  = (>0)
 
 -- | Remove duplicates and multiples from integral list
