@@ -7,12 +7,18 @@ module ProjectEuler
 import Safe
 import Data.Ratio
 import Data.Map
+import Data.Maybe
+import Data.Monoid
 import Prelude hiding (lookup)
 
-import qualified ProjectEuler.Problem_0001.Answer as P0001
+import qualified ProjectEuler.Problem_0001 as P0001
 
 newtype ProblemNumber = ProblemNumber Int
-  deriving (Eq,Ord,Read,Show)
+  deriving (Eq,Ord,Read)
+
+instance Bounded ProblemNumber where
+  minBound = ProblemNumber 1
+  maxBound = ProblemNumber 522
 
 instance Enum ProblemNumber where
   fromEnum (ProblemNumber x) = x 
@@ -24,9 +30,8 @@ instance Enum ProblemNumber where
       max = fromEnum (maxBound :: ProblemNumber)
       min = fromEnum (minBound :: ProblemNumber)
 
-instance Bounded ProblemNumber where
-  minBound = ProblemNumber 1
-  maxBound = ProblemNumber 522
+instance Show ProblemNumber where
+  show (ProblemNumber x) = show x
 
 answer :: ProblemNumber -> Maybe String
 answer = (`lookup` answers)
@@ -46,10 +51,18 @@ descriptions =
   fromList $
   [
   ] 
-{-
-awardCompleted :: Award -> Bool
-awardCompleted x =
-  |  
-  where progress awardProgress x
--}
+
+delegateMain :: ProblemNumber -> IO ()
+delegateMain n
+  | isJust main' = fromJust main'
+  | otherwise    = return ()
+  where
+    main' = n `lookup` mains
+
+mains :: Map ProblemNumber (IO ())
+mains =
+  mapKeys toEnum 
+  . fromList $
+  [ (1, P0001.main)
+  ] 
 

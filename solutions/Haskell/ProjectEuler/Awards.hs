@@ -5,10 +5,10 @@ module ProjectEuler.Awards
 import Control.Applicative ((<$>),(<*>))
 import Data.Maybe
 import Data.Ratio
-import Data.List ((\\),partition)
+import Data.List ((\\),intersect,partition)
 import ProjectEuler (ProblemNumber,answer)
 
-data Award = BabySteps | TheJourneyBegins
+data Award = BabySteps | TheJourneyBegins | UnluckySquares
   deriving (Bounded,Eq,Enum,Read,Show)
 
 data AwardProgress = AwardProgress Award Progress
@@ -25,12 +25,22 @@ instance Show AwardProgress where
 
 
 applicableProblems :: Award -> [ProblemNumber]
-applicableProblems BabySteps        = [minBound..maxBound]
-applicableProblems TheJourneyBegins = [minBound..maxBound]
+applicableProblems BabySteps        = allProblems
+applicableProblems TheJourneyBegins = allProblems
+applicableProblems UnluckySquares   = (toEnum <$>)
+                                    $ ((^2) <$> allNumbers) 
+                                   `intersect ` allNumbers
+
+allProblems :: [ProblemNumber]
+allProblems = [minBound..maxBound] 
+
+allNumbers :: [Int]
+allNumbers = fromEnum <$> allProblems 
 
 awardThreshhold :: Award -> Int
 awardThreshhold BabySteps        = 3
 awardThreshhold TheJourneyBegins = 25
+awardThreshhold UnluckySquares   = 13
 
 awardPartition :: Award -> ([ProblemNumber], [ProblemNumber])
 awardPartition = partition (isJust . answer) . applicableProblems
