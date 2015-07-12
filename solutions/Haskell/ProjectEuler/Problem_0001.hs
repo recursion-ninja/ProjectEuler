@@ -7,12 +7,16 @@ module ProjectEuler.Problem_0001
   ) where
 
 import Data.List                 (delete)
-import System.Environment        (getArgs,getProgName)
+import System.Environment        (getProgName)
 import Text.Regex                (mkRegex,splitRegex)
 import Text.Regex.Base.RegexLike (match)
+
+import ProjectEuler.Internal.Parameters   (getParameters)
 import ProjectEuler.Problem_0001.Solution (solution)
 
+defaultLimit :: Integer
 defaultLimit    = 1000
+defaultDivisors :: [Integer]
 defaultDivisors = [3,5]
 
 answer :: Integer
@@ -29,7 +33,7 @@ description
 
 main :: IO ()
 main = do
-  args <- getArgs
+  args <- getParameters
   if   printHelpParamPassed args
   then printHelp
   else print $ solution (getLimit args) (getDivisors args)
@@ -56,8 +60,9 @@ printHelpParamPassed =
 printHelp :: IO ()
 printHelp = getProgName
         >>= \name -> putStrLn
-          $ "\n" ++ unlines
-          [ "  Usage: " ++ name ++ " <limit> <divisors>"
+          $ unlines
+          [ ""
+          , "  Usage: " ++ name ++ " <limit> <divisors>"
           , "  Calculates the sum of all natural numbers less then <limit>"
           , "  and also divisible by a number in <divisors>"
           , "    <limit>    :: Int (1000)"

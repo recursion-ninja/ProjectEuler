@@ -1,4 +1,4 @@
-module ProjectEuler.Inputs
+module ProjectEuler.Internal.Input
   ( (~%~)
   , DefaultInput()
   , Input(..)
@@ -8,7 +8,7 @@ module ProjectEuler.Inputs
 
 import Control.Applicative ((<$>))
 import Control.Arrow       ((***))
-import Data.Ratio          (Rational)
+--import Data.Ratio          (Rational)
 
 data DefaultInput 
    = DefaultInput
