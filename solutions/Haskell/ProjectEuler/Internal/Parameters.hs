@@ -1,10 +1,14 @@
 module ProjectEuler.Internal.Parameters
   ( getParameters
+  , printHelpParamPassed
   ) where
 
 import Control.Applicative        ((<$>))
 import Data.Maybe                 (isJust)
 import System.Environment         (getArgs)
+import Text.Regex                 (mkRegex)
+import Text.Regex.Base.RegexLike  (match)
+
 import ProjectEuler.Internal.Task (parseTask)
 
 -- | Conditionally filtered program arguments
@@ -19,3 +23,7 @@ getParameters = workingArgs <$> getArgs
       where
         (task, xs) = parseTask args
     
+printHelpParamPassed :: [String] -> Bool
+printHelpParamPassed =
+  any (match $ mkRegex "-+[hH](elp)?")
+

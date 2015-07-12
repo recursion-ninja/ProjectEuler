@@ -6,12 +6,11 @@ module ProjectEuler.Problem_0001
   , main
   ) where
 
-import Data.List                 (delete)
+import Data.Maybe                (fromJust,isJust)
+import Safe                      (headMay,readMay)
 import System.Environment        (getProgName)
-import Text.Regex                (mkRegex,splitRegex)
-import Text.Regex.Base.RegexLike (match)
 
-import ProjectEuler.Internal.Parameters   (getParameters)
+import ProjectEuler.Internal.Parameters   (getParameters, printHelpParamPassed)
 import ProjectEuler.Problem_0001.Solution (solution)
 
 defaultLimit :: Integer
@@ -42,20 +41,18 @@ getLimit :: [String] -> Integer
 getLimit args =
   if   not  $ null args
   then read $ head args
-  else 1000 --default
+  else defaultLimit
 
 getDivisors :: [String] -> [Integer]
 getDivisors args =
-  if   length args > 1 && (not . null) list
-  then map read list
-  else [3,5] --default
-    where -- Less fragile then standard read 
-      list = parseList $ args !! 1
-      parseList = filter (not . null) . splitRegex (mkRegex ",") . delete '[' . delete ']'
-
-printHelpParamPassed :: [String] -> Bool
-printHelpParamPassed =
-  any (match $ mkRegex "-+[hH](elp)?")
+  if (not . null) args
+  &&  validList list
+  then fromJust list
+  else defaultDivisors
+    where
+      validList x = isJust x && (not . null . fromJust) x 
+      list = headMay args 
+         >>= readMay
 
 printHelp :: IO ()
 printHelp = getProgName
@@ -65,6 +62,6 @@ printHelp = getProgName
           , "  Usage: " ++ name ++ " <limit> <divisors>"
           , "  Calculates the sum of all natural numbers less then <limit>"
           , "  and also divisible by a number in <divisors>"
-          , "    <limit>    :: Int (1000)"
-          , "    <divisors> :: CSV Int List (3,5)"
+          , "    <limit>    1000  ::  Integer"
+          , "    <divisors> [3,5] :: [Integer]"
           ]

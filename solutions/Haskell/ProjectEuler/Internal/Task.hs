@@ -4,11 +4,11 @@ module ProjectEuler.Internal.Task
   , Operation(..)
   ) where
 
-import Control.Applicative (liftA2)
-import Data.Char           (isSpace)
+import Control.Applicative       (liftA2)
+import Data.Char                 (isSpace)
 import Data.Maybe
-import Prelude hiding      (lookup)
-import Safe                (readMay)
+import Prelude hiding            (lookup)
+import Safe                      (readMay)
 
 import ProjectEuler.Internal.ProblemNumber
 
