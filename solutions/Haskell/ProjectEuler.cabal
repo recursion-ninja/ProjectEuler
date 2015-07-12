@@ -35,7 +35,7 @@ executable euler
                 -fwarn-unused-matches
 
   
-Test-Suite euler-test-suite
+Test-Suite euler-testsuite
   type:   	 exitcode-stdio-1.0
-  main-is: 	 ProjectEuler/TestSuite.hs
+  main-is: 	 TestSuite.hs
   build-depends: base >=4.7, containers ==0.5.*, QuickCheck
