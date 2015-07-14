@@ -15,4 +15,4 @@ all: $(name)
 $(name): $(source)
 	ghc $< -o $@ $(optimize) $(linking) $(main-is) $(warnings) $(sanity)
 clean:
-	rm -fv $(main-mod).o $(main-mod).hi $(main-mod)/*.o $(main-mod)/*.hi
+	find ProjectEuler -name "*.o" -type f -delete && find ProjectEuler -name "*.hi" -type f -delete
