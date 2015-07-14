@@ -50,5 +50,5 @@ printHelp
     [ "  Usage: " ++ name ++ " <limit>"
     , "  Calculates the sum of all even fibonacci numbers"
     , "  whose value is less then <limit>"
-    , "    <limit> (" ++ show defaultLimit ++ ") :: Integer"
+    , "    <limit> " ++ show defaultLimit ++ " :: Integer"
     ]

@@ -50,5 +50,5 @@ printHelp
     [ ""
     , "  Usage: " ++ name ++ " <target>"
     , "  Calculates the largest prime factor of <target>"
-    , "    <target> (" ++ show defaultNumber ++ ") :: Integer"
+    , "    <target> " ++ show defaultNumber ++ " :: Integer"
     ]
