@@ -9,12 +9,12 @@ import Test.QuickCheck
 import qualified ProjectEuler.Problem_0001.Solution as P0001
 
 main ::  IO ()
-main = do
-  quickCheck equivelence_naive_algorithm
+main = quickCheck equivelenceNaiveAlgorithm
 
-equivelence_naive_algorithm :: (Int,[Int]) -> Bool
-equivelence_naive_algorithm (limit,divisors) =
-    limit > 1000 -- High limits cause runtime issues from naive solution
+equivelenceNaiveAlgorithm :: (Int,[Int]) -> Bool
+equivelenceNaiveAlgorithm (limit,divisors) =
+    limit > 1000         -- High limits cause runtime issues from naive solution
+ || length divisors > 20 -- Long lists  cause runtime issues from naive solution
  || P0001.solution limit divisors == naiveSolution limit divisors
 
 n `divides` x = x `mod` n == 0
