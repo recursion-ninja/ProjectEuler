@@ -44,10 +44,11 @@ getLimit args =
   else defaultLimit
 
 printHelp :: IO ()
-printHelp = getProgName
-        >>= \ name -> putStrLn 
-        ("\n"
-         ++ "  Usage: "++name++" <limit>\n"
-         ++ "  Calculates the sum of all even fibonacci numbers\n"
-         ++ "  whose value is less then <limit>\n"
-         ++ "    <limit> ("++ show defaultLimit ++") :: Integer\n")
+printHelp
+    = getProgName
+  >>= \ name -> putStrLn $ unlines
+    [ "  Usage: " ++ name ++ " <limit>"
+    , "  Calculates the sum of all even fibonacci numbers"
+    , "  whose value is less then <limit>"
+    , "    <limit> (" ++ show defaultLimit ++ ") :: Integer"
+    ]

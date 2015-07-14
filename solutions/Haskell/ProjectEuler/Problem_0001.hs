@@ -55,13 +55,13 @@ getDivisors args =
          >>= readMay
 
 printHelp :: IO ()
-printHelp = getProgName
-        >>= \name -> putStrLn
-          $ unlines
-          [ ""
-          , "  Usage: " ++ name ++ " <limit> <divisors>"
-          , "  Calculates the sum of all natural numbers less then <limit>"
-          , "  and also divisible by a number in <divisors>"
-          , "    <limit>    1000  ::  Integer"
-          , "    <divisors> [3,5] :: [Integer]"
-          ]
+printHelp
+    = getProgName
+  >>= \name -> putStrLn $ unlines
+    [ ""
+    , "  Usage: " ++ name ++ " <limit> <divisors>"
+    , "  Calculates the sum of all natural numbers less then <limit>"
+    , "  and also divisible by a number in <divisors>"
+    , "    <limit>    1000  ::  Integer"
+    , "    <divisors> [3,5] :: [Integer]"
+    ]
