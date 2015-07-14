@@ -18,7 +18,8 @@ cabal-version:       >=1.8
 executable euler
   main-is:	Main.hs
   -- Other library packages from which modules are imported.
-  build-depends: base         >=4.7
+  build-depends: arithmoi     ==0.4.*
+               , base         >=4.7
                , containers   ==0.5.*
                , regex-compat ==0.95.*
                , regex-base   ==0.93.*
@@ -34,7 +35,7 @@ executable euler
                 -fwarn-unused-imports
                 -fwarn-unused-matches
 
-  
+ 
 Test-Suite euler-testsuite
   type:   	 exitcode-stdio-1.0
   main-is: 	 TestSuite.hs
