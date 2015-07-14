@@ -11,24 +11,29 @@ import Prelude hiding      (lookup)
 
 import ProjectEuler.Internal.ProblemNumber
 import qualified ProjectEuler.Problem_0001 as P0001
+import qualified ProjectEuler.Problem_0002 as P0002
 
 answer :: ProblemNumber -> Maybe String
 answer = (`lookup` answers)
 
 answers :: Map ProblemNumber String
-answers = fmap show 
-        . mapKeys toEnum 
-        $ fromList 
-        [ (1,P0001.answer)
-        ]
+answers
+  = fmap show 
+  . mapKeys toEnum 
+  $ fromList 
+  [ (1,P0001.answer)
+  , (2,P0002.answer)
+  ]
 
 description :: ProblemNumber -> Maybe String
 description = (`lookup` descriptions)
 
 descriptions :: Map ProblemNumber String
-descriptions =
-  fromList
-  [
+descriptions
+  = mapKeys toEnum 
+  $ fromList
+  [ (1, P0001.description)
+  , (2, P0002.description)
   ] 
 
 solution :: ProblemNumber -> IO ()
@@ -39,8 +44,9 @@ solution n
     main' = n `lookup` mains
 
 mains :: Map ProblemNumber (IO ())
-mains =
-  mapKeys toEnum 
+mains
+  = mapKeys toEnum 
   . fromList $
   [ (1, P0001.main)
+  , (2, P0002.main)
   ]
