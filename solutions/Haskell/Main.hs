@@ -14,10 +14,14 @@ main = getArgs
    >>= handleTask . parseTask
 
 handleTask :: (Maybe Task, [String]) -> IO ()
-handleTask (Nothing, _)              = printUsage
-handleTask (Just (Task Answer      n), _) = print $ answer n
-handleTask (Just (Task Description n), _) = print $ description n
+handleTask (Nothing, _)                   = printUsage
+handleTask (Just (Task Answer      n), _) = printMaybe $ answer n
+handleTask (Just (Task Description n), _) = printMaybe . fmap ("\n"++) $ description n
 handleTask (Just (Task Solution    n), _) = solution n
+
+printMaybe :: Maybe String -> IO ()
+printMaybe (Just str) = putStrLn $ "Just: " ++ str
+printMaybe Nothing    = putStrLn   "Nothing"
 
 printUsage :: IO ()
 printUsage = do 
@@ -32,5 +36,5 @@ printUsage = do
                                ++ (show . fromEnum) (maxBound::ProblemNumber)
                                ++ "]"
     , "  Arguments:      --help to see specific argument options"
-    , "                         for the given Operation & ProbelmNumber"
+    , "                         for the given Operation & ProblemNumber"
     ]
