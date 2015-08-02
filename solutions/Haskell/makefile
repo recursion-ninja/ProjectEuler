@@ -13,6 +13,6 @@ source   = $(main-mod).$(language)
 all: $(name)
 
 $(name): $(source)
-	ghc $< -o $@ $(optimize) $(linking) $(main-is) $(warnings) $(sanity)
+	ghc $< -o bin/$@ $(optimize) $(linking) $(main-is) $(warnings) $(sanity)
 clean:
 	find ProjectEuler -name "*.o" -type f -delete && find ProjectEuler -name "*.hi" -type f -delete
