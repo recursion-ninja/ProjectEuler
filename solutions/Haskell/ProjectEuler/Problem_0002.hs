@@ -8,7 +8,7 @@ module ProjectEuler.Problem_0002
 
 import System.Environment (getProgName)
 
-import ProjectEuler.Internal.Parameters   (getParameters, printHelpParamPassed)
+import ProjectEuler.Internal.Parameters   ((~!?),getParameters,printHelpParamPassed)
 import ProjectEuler.Problem_0002.Solution (solution)
 
 defaultLimit :: Integer
@@ -38,10 +38,7 @@ main = do
   else print . solution . getLimit $ args
 
 getLimit :: [String] -> Integer
-getLimit args =
-  if   not  $ null args
-  then read $ head args
-  else defaultLimit
+getLimit = maybe defaultLimit id . (~!? 0)
 
 printHelp :: IO ()
 printHelp

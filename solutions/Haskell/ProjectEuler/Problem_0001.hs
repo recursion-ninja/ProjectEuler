@@ -6,11 +6,9 @@ module ProjectEuler.Problem_0001
   , main
   ) where
 
-import Data.Maybe                (fromJust,isJust)
-import Safe                      (headMay,readMay)
 import System.Environment        (getProgName)
 
-import ProjectEuler.Internal.Parameters   (getParameters, printHelpParamPassed)
+import ProjectEuler.Internal.Parameters   ((~!?),getParameters,printHelpParamPassed)
 import ProjectEuler.Problem_0001.Solution (solution)
 
 defaultLimit :: Integer
@@ -38,21 +36,10 @@ main = do
   else print $ solution (getLimit args) (getDivisors args)
 
 getLimit :: [String] -> Integer
-getLimit args =
-  if   not  $ null args
-  then read $ head args
-  else defaultLimit
+getLimit = maybe defaultLimit id . (~!? 0)
 
 getDivisors :: [String] -> [Integer]
-getDivisors args =
-  if (not . null) args
-  &&  validList list
-  then fromJust list
-  else defaultDivisors
-    where
-      validList x = isJust x && (not . null . fromJust) x 
-      list = headMay args 
-         >>= readMay
+getDivisors = maybe defaultDivisors id . (~!? 1)
 
 printHelp :: IO ()
 printHelp
@@ -65,3 +52,4 @@ printHelp
     , "    <limit>    1000  ::  Integer"
     , "    <divisors> [3,5] :: [Integer]"
     ]
+

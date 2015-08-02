@@ -8,7 +8,7 @@ module ProjectEuler.Problem_0003
 
 import System.Environment (getProgName)
 
-import ProjectEuler.Internal.Parameters   (getParameters, printHelpParamPassed)
+import ProjectEuler.Internal.Parameters   ((~!?),getParameters,printHelpParamPassed)
 import ProjectEuler.Problem_0003.Solution (solution)
 
 {--
@@ -38,10 +38,7 @@ main = do
   else print . solution . getNumber $ args
 
 getNumber :: [String] -> Integer
-getNumber args =
-  if   not  $ null args
-  then read $ head args
-  else defaultNumber
+getNumber = maybe defaultNumber id . (~!? 0)
 
 printHelp :: IO ()
 printHelp
