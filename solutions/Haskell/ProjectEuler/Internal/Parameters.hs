@@ -1,10 +1,12 @@
 module ProjectEuler.Internal.Parameters
-  ( getParameters
+  ( (~!?)
+  , getParameters
   , printHelpParamPassed
   ) where
 
 import Control.Applicative        ((<$>))
 import Data.Maybe                 (isJust)
+import Safe                       (headMay,readMay)
 import System.Environment         (getArgs)
 import Text.Regex                 (mkRegex)
 import Text.Regex.Base.RegexLike  (match)
@@ -27,3 +29,7 @@ printHelpParamPassed :: [String] -> Bool
 printHelpParamPassed =
   any (match $ mkRegex "-+[hH](elp)?")
 
+(~!?) :: Read a => [String] -> Int -> Maybe a
+(~!?) [] _          = Nothing
+(~!?)  _ n  | n < 0 = Nothing
+(~!?) xs n          = headMay (drop n xs) >>= readMay
