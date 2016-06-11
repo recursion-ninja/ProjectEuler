@@ -1,0 +1,45 @@
+module ProjectEuler.Problem_0086.Solution
+  ( solution
+  , alpha
+  , beta
+  , gamma
+  ) where
+
+--import Math.NumberTheory.Powers.Squares 
+
+data PythagoreanTriple 
+   = PT
+   { tripleMin  :: Integer
+   , tripleMean :: Integer
+   , tripleMax  :: Integer
+   } deriving (Eq,Ord)
+
+instance Show PythagoreanTriple where
+  show (PT a b c) = mconcat [ "(", show a
+                            , ",", show b
+                            , ",", show c
+                            , ")"
+                            ]
+
+solution :: Int -> Integer
+solution = (gamma !!) --const 0
+
+gamma :: [Integer]
+gamma = scanl (+) 0 $ beta . alpha <$> [0..]
+
+beta :: [PythagoreanTriple] -> Integer
+beta = sum . fmap cuboidRoutes
+  where
+    cuboidRoutes pt = tripleMin pt - 1
+
+alpha :: Integer -> [PythagoreanTriple]
+alpha n = filterTriples
+          [ (x,n,m)
+          | x <- [1..n-1]
+          , m <- exactSquareRoot $ x*x + n*n
+          ]
+  where
+    filterTriples                  []  = []
+    filterTriples ((_, _, Nothing):xs) = xs
+    filterTriples ((a, b, Just c ):xs) = (PT a b c) : filterTriples xs
+

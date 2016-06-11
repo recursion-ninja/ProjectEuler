@@ -1,0 +1,18 @@
+flags: {}
+extra-package-dbs: []
+packages:
+- '.'
+system-ghc: false
+extra-deps:
+- QuickCheck-2.8.2
+- arithmoi-0.4.2.0
+- mtl-2.2.1
+- primitive-0.6.1.0
+- random-1.1
+- regex-base-0.93.2
+- regex-compat-0.95.1
+- regex-posix-0.95.2
+- safe-0.3.9
+- tf-random-0.5
+compiler-check: newer-minor
+resolver: ghc-8.0.1

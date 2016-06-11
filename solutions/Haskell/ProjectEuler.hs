@@ -13,6 +13,7 @@ import ProjectEuler.Internal.ProblemNumber
 import qualified ProjectEuler.Problem_0001 as P0001
 import qualified ProjectEuler.Problem_0002 as P0002
 import qualified ProjectEuler.Problem_0003 as P0003
+import qualified ProjectEuler.Problem_0086 as P0086
 
 answer :: ProblemNumber -> Maybe String
 answer = (`lookup` answers)
@@ -50,7 +51,8 @@ mains :: Map ProblemNumber (IO ())
 mains
   = mapKeys toEnum 
   . fromList $
-  [ (1, P0001.main)
-  , (2, P0002.main)
-  , (3, P0003.main)
+  [ ( 1, P0001.main)
+  , ( 2, P0002.main)
+  , ( 3, P0003.main)
+  , (86, P0086.main)
   ]
