@@ -20,10 +20,12 @@ executable euler
   -- Other library packages from which modules are imported.
   build-depends: arithmoi     >=0.4.2
                , base         >=4.7
-               , containers   
+               , containers
+               , mono-traversable
                , regex-compat 
                , regex-base   
-               , safe         
+               , safe
+               , vector
 
   ghc-options:	-O2 -Wall -Werror
                 -fwarn-duplicate-exports
