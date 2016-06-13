@@ -21,13 +21,13 @@ answer = (`lookup` answers)
 
 answers :: Map ProblemNumber String
 answers
-  = fmap show 
-  . mapKeys toEnum 
+  = mapKeys toEnum 
   $ fromList 
-  [ ( 1, P0001.answer)
-  , ( 2, P0002.answer)
-  , ( 3, P0003.answer)
-  , (90, P0090.answer)
+  [ ( 1, show $ P0001.answer)
+  , ( 2, show $ P0002.answer)
+  , ( 3, show $ P0003.answer)
+  , (86, show $ P0086.answer)
+  , (90, show $ P0090.answer)
   ]
 
 description :: ProblemNumber -> Maybe String
@@ -40,6 +40,7 @@ descriptions
   [ ( 1, P0001.description)
   , ( 2, P0002.description)
   , ( 3, P0003.description)
+  , (86, P0086.description)
   , (90, P0090.description)
   ] 
 

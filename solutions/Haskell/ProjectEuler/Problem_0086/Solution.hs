@@ -1,57 +1,34 @@
 module ProjectEuler.Problem_0086.Solution
   ( solution
-  , alpha
-  , beta
-  , gamma
   ) where
 
-import Math.NumberTheory.Powers.Squares 
+import Math.NumberTheory.Powers.Squares (isSquare')
 
-data PythagoreanTriple 
-   = PT
-   { tripleMin  :: Integer
-   , tripleMean :: Integer
-   , tripleMax  :: Integer
-   } deriving (Eq,Ord)
+{- |
+ Get the minimnal value M, such that the number of cuboids with dimensions less
+ than or equal to M x M x M that have integral shortest paths from one corner to
+ the opposite corner exceeds the supplied number.
+-}
+solution :: Int -> Int
+solution n = pred . length $ takeWhile (<=n) cumulativeCuboids
 
-instance Show PythagoreanTriple where
-  show (PT a b c) = mconcat [ "(", show a
-                            , ",", show b
-                            , ",", show c
-                            , ")"
-                            ]
+{- |
+ Each element of the list olds the /cumulative/ number of cuboids with integral
+ shortest paths from one corner to the opposite corner with /maximum/ a dimension
+ equal to the element's index i the list.
+-}
+cumulativeCuboids :: [Int]
+cumulativeCuboids = scanl (+) 0 $ cuboidsOfDimension <$> [0..]
 
-solution :: Int -> Integer
-solution = (gamma !!) --const 0
-
-gamma :: [Integer]
-gamma = scanl (+) 0 $ beta . alpha <$> [0..]
-
-beta :: [PythagoreanTriple] -> Integer
-beta = sum . fmap cuboidRoutes
-  where
-    cuboidRoutes pt = tripleMean pt - tripleMin pt + 1
-    {-
-      | even m    = m `div` 2
-      | otherwise = m `div` 2 + 1
-      where
-        m = 
-      -}
-                      
-alpha :: Integer -> [PythagoreanTriple]
-alpha n = filterTriples
-          [ (n, x, exactSquareRoot $ n*n + x*x)
-          | x <- [n..2*n]
-          ]
-  where
-    filterTriples :: [(Integer,Integer,Maybe Integer)] -> [PythagoreanTriple]
-    filterTriples    []  = []
-    filterTriples (x:xs) =
-      case x of
-        (_, _, Nothing) -> result
-        (a, b, Just c ) -> PT { tripleMin  = a
-                              , tripleMean = b
-                              , tripleMax  = c
-                              } : result
-      where
-        result = filterTriples xs
+{- |
+ Gets the unique number of cuboids with an integral shortest path from one
+ corner to the opposite corner with at least one of the dimensions of the
+ specified length.
+-}
+cuboidsOfDimension :: Int -> Int
+cuboidsOfDimension a = length
+  [ (a,b,c)
+  | b <- [1..a]
+  , c <- [1..b]
+  , isSquare' ((b+c)*(b+c) + a*a)
+  ]

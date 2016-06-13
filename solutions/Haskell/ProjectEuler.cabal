@@ -21,6 +21,7 @@ executable euler
   build-depends: arithmoi     >=0.4.2
                , base         >=4.7
                , containers
+               , keys
                , mono-traversable
                , regex-compat 
                , regex-base   

@@ -3,25 +3,18 @@ module ProjectEuler.Problem_0086
   ( answer
   , description
   , solution
-  , alpha
-  , beta
   , main
   ) where
 
 import System.Environment (getProgName)
 
 import ProjectEuler.Internal.Parameters   ((~!?),getParameters,printHelpParamPassed)
-import ProjectEuler.Problem_0086.Solution --(solution)
-
-{--
- - Notes:
- - Use library packages like a pro
- -}
+import ProjectEuler.Problem_0086.Solution (solution)
 
 defaultNumber :: Int
 defaultNumber = 1000000
 
-answer :: Integer
+answer :: Int
 answer = solution defaultNumber
 
 description :: String
@@ -64,5 +57,5 @@ printHelp
     , "  Calculates the smallest cuboid dimensions in which"
     , "  the number of integral shortest path solutions to"
     , "  all cuboids within the dimensions exceeds <target>"
-    , "    <target> " ++ show defaultNumber ++ " :: Integer"
+    , "    <target> " ++ show defaultNumber ++ " :: Int"
     ]
