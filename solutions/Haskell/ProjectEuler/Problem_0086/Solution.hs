@@ -26,9 +26,10 @@ cumulativeCuboids = scanl (+) 0 $ cuboidsOfDimension <$> [0..]
  specified length.
 -}
 cuboidsOfDimension :: Int -> Int
-cuboidsOfDimension a = length
-  [ (a,b,c)
-  | b <- [1..a]
-  , c <- [1..b]
-  , isSquare' ((b+c)*(b+c) + a*a)
+cuboidsOfDimension dim = sum
+  [ if   x <= dim
+    then x `div` 2
+    else dim - ((x - 1) `div` 2)
+  | x <- [2..dim + dim]
+  , isSquare' (dim*dim + x*x)
   ]
