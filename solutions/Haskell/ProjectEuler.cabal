@@ -1,3 +1,4 @@
+cabal-version: 3.8
 name:                ProjectEuler
 -- PVP summary:      +-+------- breaking API changes
 --                   | | +----- non-breaking API additions
@@ -6,38 +7,57 @@ version:             0.1.0.0
 synopsis:            Solutions to the Project Euler problem set
 description:         Solutions to the Project Euler problem set
 homepage:            projecteuler.net
-license:             GPL-3
-license-file:        LICENSE
+--license:             GPL-3
+--license-file:        LICENSE
 author:              Alex Washburn
 maintainer:          project.euler@recursion.ninja
 -- copyright:           
 category:            Math
 build-type:          Simple
-cabal-version:       >=1.8
+
 
 executable euler
   main-is:	Main.hs
   -- Other library packages from which modules are imported.
-  build-depends: arithmoi     >=0.4.2
-               , base         >=4.7
-               , containers
-               , keys
-               , mono-traversable
-               , regex-compat 
-               , regex-base   
-               , safe
-               , vector
+  build-depends:
+    arithmoi >=0.4.2,
+    base >=4.7,
+    containers,
+    keys,
+    mono-traversable,
+    regex-compat,
+    regex-base,
+    safe,
+    vector,
 
-  ghc-options:	-O2 -Wall -Werror
-                -fwarn-duplicate-exports
-                -fwarn-incomplete-patterns
-                -fwarn-missing-signatures
-                -fwarn-overlapping-patterns
-                -fwarn-tabs
-                -fwarn-unused-binds
-                -fwarn-unused-do-bind
-                -fwarn-unused-imports
-                -fwarn-unused-matches
+  ghc-options:
+    -O2 -Wall -Werror
+    -fwarn-duplicate-exports
+    -fwarn-incomplete-patterns
+    -fwarn-missing-signatures
+    -fwarn-overlapping-patterns
+    -fwarn-tabs
+    -fwarn-unused-binds
+    -fwarn-unused-do-bind
+    -fwarn-unused-imports
+    -fwarn-unused-matches
+
+  other-modules:
+    ProjectEuler
+    ProjectEuler.Internal.Parameters
+    ProjectEuler.Internal.ProblemNumber
+    ProjectEuler.Internal.Task
+    ProjectEuler.Problem_0001
+    ProjectEuler.Problem_0001.Solution
+    ProjectEuler.Problem_0002
+    ProjectEuler.Problem_0002.Solution
+    ProjectEuler.Problem_0003
+    ProjectEuler.Problem_0003.Solution
+    ProjectEuler.Problem_0086
+    ProjectEuler.Problem_0086.Solution
+    ProjectEuler.Problem_0090
+    ProjectEuler.Problem_0090.Solution
+
 
 Test-Suite euler-testsuite
   type:   	 exitcode-stdio-1.0
@@ -45,3 +65,30 @@ Test-Suite euler-testsuite
   build-depends: base >=4.7
                , containers ==0.5.*
                , QuickCheck
+
+
+
+Library p0205
+
+  build-depends:
+    arithmoi >=0.4.2,
+    array,
+    base >=4.7,
+    containers,
+    multiset,
+
+  ghc-options:
+    -O2 -Wall -Werror
+    -fwarn-duplicate-exports
+    -fwarn-incomplete-patterns
+    -fwarn-missing-signatures
+    -fwarn-overlapping-patterns
+    -fwarn-tabs
+    -fwarn-unused-binds
+    -fwarn-unused-do-bind
+    -fwarn-unused-imports
+    -fwarn-unused-matches
+
+  exposed-modules:
+--    ProjectEuler.Problem_0205
+    ProjectEuler.Problem_0205.Solution
