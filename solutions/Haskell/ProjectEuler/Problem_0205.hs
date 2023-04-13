@@ -1,5 +1,5 @@
 {-# LANGUAGE DoAndIfThenElse #-}
-module ProjectEuler.Problem_0090
+module ProjectEuler.Problem_0205
   ( answer
   , description
   , solution
@@ -9,7 +9,7 @@ module ProjectEuler.Problem_0090
 import System.Environment (getProgName)
 
 import ProjectEuler.Internal.Parameters   (getParameters,printHelpParamPassed)
-import ProjectEuler.Problem_0090.Solution (solution)
+import ProjectEuler.Problem_0205.Solution (solution)
 
 answer :: Int
 answer = solution

@@ -1,0 +1,502 @@
+{-# Language BangPatterns #-}
+{-# Language GeneralizedNewtypeDeriving #-}
+{-# Language ImportQualifiedPost #-}
+{-# Language LambdaCase #-}
+{-# Language StrictData #-}
+{-# Language TypeFamilies #-}
+{-# Language TypeOperators #-}
+{-# Language UnboxedSums #-}
+
+module ProjectEuler.Problem_0206.Solution
+  ( -- * Data types
+    -- ** ConcealedDigit
+    ConcealedDigit(..)
+    -- ** ConcealedSquare
+  , ConcealedSquare()
+  , concealedDigitsAsc
+  , concealedDigitsDes
+  , concealedMagnitude
+    -- ** FactorSet
+  , FactorSet()
+  , getFactoredComposite
+  , setFactoredSquare
+  , setFactoredPower
+    -- * Solver
+  , solveConcealedSquare
+  ) where
+
+--import Control.Arrow ((&&&))
+--import Control.Applicative ((<|>))
+--import Data.Array.IArray
+import Data.Char (digitToInt, isDigit)
+import Data.Foldable (foldl')
+--import Data.IntMultiSet (IntMultiSet, findMax, findMin, member, occur)
+--import Data.IntMultiSet qualified as IMS (fromList, toAscList)
+import Data.IntMap.Strict (IntMap, foldMapWithKey, insertWith, singleton, unionWith)
+import Data.List (intercalate)
+--import Data.Map.Strict ((!?), Map, singleton, unionsWith)
+--import Data.Maybe (fromMaybe)
+import Data.Monoid (First(..), Product(..))
+--import Data.Ratio ((%), denominator, numerator)
+import Data.Semigroup (Max(..))
+--import Data.Sequence (Seq(..), (|>), reverse, splitAt, tails) -- hiding (intersperse, length)
+import Data.Word (Word8)
+import GHC.Exts (IsList(..))
+--import           Data.List
+--import Data.Matrix
+--import           Data.MonoTraversable
+import Numeric.Natural
+--import Prelude
+
+
+{--
+import Debug.Trace
+tr :: Show a => String -> a -> a
+tr str val = trace (str <> ":\t" <> show val) val
+--}
+{--}
+tr :: b -> a -> a
+tr = const id 
+{--}
+
+newtype ConcealedSquare = ConcealedSquare [ConcealedDigit]
+
+
+data  ConcealedDigit
+    = Blank
+    | Digit {-# UNPACK #-} Word8
+    deriving (Eq, Ord)
+
+
+newtype FactorMax = FactorMax { unFactoredMax :: IntMap (Max Word8) }
+    deriving (Eq, Ord, Show)
+
+
+newtype FactorSet = FactorSet { unFactoredSet :: IntMap Word8 }
+    deriving (Eq, Ord)
+
+
+instance Bounded ConcealedDigit where
+
+    minBound = Digit 0
+
+    maxBound = Digit 9
+
+
+instance Enum ConcealedDigit where
+
+    toEnum n
+        | n < 0     = Blank
+        | otherwise = Digit $ fromIntegral (n `mod` 10)
+
+    fromEnum = \case
+        Blank   -> -1
+        Digit n -> fromEnum n
+
+
+instance Integral ConcealedDigit where
+
+    toInteger = \case
+      Blank   -> -1
+      Digit n -> fromIntegral n
+    
+    quotRem Blank _ = (Blank, Blank)
+    quotRem _ Blank = (Blank, Blank)
+    quotRem (Digit x) (Digit y) = (Digit q, Digit r)
+      where (q, r) = quotRem x y
+
+
+instance IsList ConcealedSquare where
+
+    type Item ConcealedSquare = ConcealedDigit
+
+    fromList = ConcealedSquare
+
+    toList (ConcealedSquare ds) = ds
+
+
+instance Monoid FactorMax where
+
+    mappend = (<>)
+
+    mempty  = FactorMax mempty
+
+
+instance Monoid FactorSet where
+
+    mappend = (<>)
+
+    mempty  = FactorSet mempty
+
+
+instance Num ConcealedDigit where
+
+    (+) = digitOp (+)
+
+    (-) = digitOp (-)
+
+    (*) = digitOp (*)
+
+    abs = id
+
+    fromInteger n
+      | n < 0     = Blank
+      | otherwise = Digit . fromInteger $ n `mod` 10
+
+    negate = \case
+        Blank   -> Blank
+        Digit n -> Digit $ 10 - n
+
+    signum = \case
+      Blank   -> Blank
+      Digit n -> Digit $ min 1 n
+
+
+
+instance Read ConcealedDigit where
+
+    readsPrec _ ('_':rest) = [(Blank, rest)]
+
+    readsPrec _ (c:rest)
+        | isDigit c = [(Digit (read [c]), rest)]
+        | otherwise = []
+
+    readsPrec _ _ = []
+
+
+instance Read ConcealedSquare where
+
+    readsPrec _ input =
+        let (token, rest) = span (/= ' ') input
+            parseDigit = \case
+              '_' -> Just Blank
+              c | isDigit c -> Just . Digit . toEnum $ digitToInt c
+              _   -> Nothing
+
+        in  case traverse parseDigit token of
+              Just ds -> [(ConcealedSquare ds, rest)]
+              Nothing -> []
+
+
+instance Real ConcealedDigit where
+
+    toRational Blank = 0
+    toRational (Digit n) = toRational n
+
+
+instance Semigroup FactorMax where
+  
+    (<>) (FactorMax lhs) (FactorMax rhs) = FactorMax $ unionWith (<>) lhs rhs
+
+
+instance Semigroup FactorSet where
+  
+    (<>) (FactorSet lhs) (FactorSet rhs) = FactorSet $ unionWith (+) lhs rhs
+
+
+instance Show ConcealedDigit where
+
+    show = \case
+        Blank -> "_"
+        Digit d -> show d
+  
+
+instance Show ConcealedSquare where
+  
+    show = foldMap show . toList
+
+
+instance Show FactorSet where
+  
+    show fs@(FactorSet im) =
+        let numStr key val = [ (show key, showPower $ val `div` 2) ]
+            numExp key val = Product $ key ^ (val `div` 2)
+            encloseStr = \case
+                [] -> ""
+                [(x,"")] -> x <> "²"
+                xs  -> "(" <> intercalate " * " (uncurry (<>) <$> xs) <> ")²"
+            factorsStr = encloseStr . foldMapWithKey numStr
+            productStr = show . getFactoredComposite
+            squaredStr = show . getProduct . foldMapWithKey numExp
+            showPower pow
+                | pow <= 1  = ""
+                | otherwise = showDigit <$> show pow
+            showDigit = \case
+                '1' -> '¹'
+                '2' -> '²'        
+                '3' -> '³'        
+                '4' -> '⁴'
+                '5' -> '⁵'
+                '6' -> '⁶'
+                '7' -> '⁷'
+                '8' -> '⁸'
+                '9' -> '⁹'
+                _   -> '⁰'
+        in  unwords [ squaredStr im,  "=", factorsStr im, "=", productStr fs ]
+
+    showList =
+        let enclose x = unwords [ "[", x, "]" ]
+            listZero = "∅"
+            listSome = enclose . intercalate ", " . fmap show
+        in  \case
+              []  -> mappend $ listZero
+              xs -> mappend $ listSome xs
+
+
+{- |
+Retrieves the 'ConcealedDigit's of a 'ConcealedSquare' on /ascending/ order of significance.
+-}
+concealedDigitsAsc :: ConcealedSquare -> [ConcealedDigit]
+concealedDigitsAsc = reverse . toList
+
+
+{- |
+Retrieves the 'ConcealedDigit's of a 'ConcealedSquare' on /descending/ order of significance.
+-}
+concealedDigitsDes :: ConcealedSquare -> [ConcealedDigit]
+concealedDigitsDes = toList
+
+
+{- |
+Returns the exponent /e/ such that the 'ConcealedSquare' value /v/ is between $$10^(e-1) \le v < 10^e$$.
+-}
+concealedMagnitude :: ConcealedSquare -> Word
+concealedMagnitude = toEnum . length . toList
+
+
+{- |
+-}
+maxFactoredPower :: (Enum b, Enum e) => b -> e -> FactorMax
+maxFactoredPower factor pow =
+    let f = fromEnum factor
+        e = fromExp pow
+    in  FactorMax $ insertWith (<>) f (Max e) mempty
+
+
+setFactoredPower :: (Enum b, Enum e) => b -> e -> FactorSet
+setFactoredPower factor = case abs $ fromEnum factor of
+    0 -> const mempty
+    1 -> const mempty
+    x -> FactorSet . singleton x . fromExp
+
+
+factorSetSquared :: FactorSet -> FactorSet
+factorSetSquared = FactorSet . fmap (* 2) . unFactoredSet
+
+
+setFactoredSquare :: Enum b => b -> FactorSet
+setFactoredSquare = flip setFactoredPower (2 :: Word8)
+
+
+getFactoredComposite :: FactorSet -> Natural
+getFactoredComposite = 
+    let factoredExponent :: Int -> Word8 -> Product Natural
+        factoredExponent prime = Product . (toEnum prime ^)
+    in  getProduct . foldMapWithKey factoredExponent . unFactoredSet
+
+
+getFactoredSquareRoot :: FactorSet -> Natural
+getFactoredSquareRoot =
+    let mulExp key = Product . (toEnum key ^) . (`div` 2)
+    in  getProduct . foldMapWithKey mulExp . unFactoredSet
+
+
+{-
+omissions :: ConcealedSquare -> ConcealedSquare
+omissions cSquare =
+    let digits = toList cSquare
+        sizing = length digits
+        blanks = length $ filter (Blank ==) digits
+        choice = sizing - blanks - 1
+    in  [1 .. choice ]
+-}
+
+{- |
+Consider the polymonial /P(x)/
+
+    P(X) = x_0 * 10^0 + x_1 * 10^1 + ... + x_n * 10 ^ n = 1_2_3_4_5_6_7_8_9_0
+
+Then we have that the coefficients:
+
+    - x_{ 0} = 0
+    - x_{ 2} = 9
+    - x_{ 4} = 8
+    - x_{ 6} = 7 
+    - x_{ 8} = 6
+    - x_{10} = 5 
+    - x_{12} = 4 
+    - x_{14} = 3
+    - x_{16} = 3
+    - x_{18} = 1
+
+
+-}
+solveConcealedSquare :: (IsList (f FactorSet), Item (f FactorSet) ~ FactorSet) => ConcealedSquare -> f FactorSet
+solveConcealedSquare cSquare =
+    let concealedDigitSeq = concealedDigitsAsc cSquare
+
+        factorSet :: FactorSet
+        factorSet = factorizeConcealedDigits concealedDigitSeq
+
+        coefficient :: Natural
+        coefficient = tr "coefficient" $ getFactoredComposite factorSet
+
+        coefficientRoot = tr "coefficientRoot" $ getFactoredSquareRoot factorSet
+
+        inferBound :: Bool -> Word -> Natural
+        inferBound roundUp pow =
+            let baseRoot :: Natural
+                baseRoot = case pow `quotRem` 2 of
+                  (e,0) -> 10 ^ e
+                  _     -> rounder . integralSquareRoot $ (10 :: Natural) ^ pow
+
+                rounder
+                    | roundUp   = ceiling
+                    | otherwise = floor
+
+            in  case baseRoot `quotRem` coefficientRoot of
+                    (q,0) -> q
+                    (q,_) -> q + if roundUp then 1 else 0
+  
+        upperPower = tr "upperPower" $ concealedMagnitude cSquare
+        lowerPower = tr "lowerPower" $ upperPower - 1
+
+        firstSquare = tr "firstSquare" $ inferBound True  lowerPower
+        finalSquare = tr "finalSquare" $ inferBound False upperPower
+
+        buildSquare 1 = (factorSet, coefficient)
+        buildSquare n =
+            let factoring = tr "factoring" . factorSetSquared $ primeFactors n
+                candidate = factorSet <> factoring 
+            in  (candidate, coefficient * n * n)
+
+        optionSquares = buildSquare <$> [ firstSquare .. finalSquare ]
+
+        filterSquares =
+            let overflowValue = 10 ^ upperPower
+                validSquare x = x < overflowValue && digitsMatch concealedDigitSeq x
+            in  fmap fst . filter (validSquare . snd)
+        
+    in  fromList $ filterSquares optionSquares
+
+
+{- |
+Takes a list of 'ConcealedDigit's in /ascending/ order and produces a collection of primes which are required factors of the concealed number if the number is a square.
+-}
+factorizeConcealedDigits :: [ConcealedDigit] -> FactorSet
+factorizeConcealedDigits =
+    let factorAdded :: FactorMax -> [(Int, Word8)] -> FactorMax
+        factorAdded bag = foldr (\x -> (uncurry maxFactoredPower x <>)) bag . tr "factorAdded"
+
+        factorDigit :: FactorMax -> (Word, ConcealedDigit) -> FactorMax
+        factorDigit acc (0, num) = tr "factorDigit" . (factorAdded acc) $ case num of
+            Digit 0 -> [ (2, 1), (5, 1) ]
+            Digit 2 -> [ (2, 1) ]
+            Digit 4 -> [ (2, 2) ]
+            Digit 5 -> [ (5, 1) ]
+            Digit 6 -> [ (2, 1) ]
+            Digit 8 -> [ (2, 1) ]
+            _       -> []
+        factorDigit acc _ = acc
+
+        factorsToSquares :: FactorMax -> FactorSet
+        factorsToSquares =
+            let squarify e
+                    | odd e     = e + 1
+                    | otherwise = e
+            in  FactorSet . fmap (squarify . getMax) . unFactoredMax
+ 
+    in  factorsToSquares . foldl' factorDigit mempty . zip [ (0 :: Word) .. ]
+
+
+digitOp :: (Word8 -> Word8 -> Word8) -> ConcealedDigit -> ConcealedDigit -> ConcealedDigit
+digitOp op = \case
+    Blank       -> const Blank
+    d@(Digit x) -> \case
+        Blank   -> d
+        Digit y -> Digit $ (x `op` y) `mod` 10
+
+
+digitsMatch :: Foldable f => f ConcealedDigit -> Natural -> Bool
+digitsMatch =
+    let check :: (Bool, Natural) -> ConcealedDigit -> (Bool, Natural)
+--        check acc digit| trace (unwords [ "Check @", show digit, " + ", show acc ]) False = undefined
+        check acc@(match, value) digit
+            | not match = acc
+            | otherwise = case digit of
+                Blank   -> (`div` 10) <$> acc 
+                Digit n ->
+                    let (q,r) = value `quotRem` 10
+                    in  (fromIntegral r == n, q)
+
+        go :: Foldable f => Natural -> f ConcealedDigit -> Bool
+        go nat = fst . foldl' check (True, nat)
+
+    in  flip go
+
+
+fromExp :: Enum e => e -> Word8
+fromExp e = toEnum $ fromEnum e `mod` fromEnum (maxBound :: Word8)
+
+
+integralSquareRoot :: Integral n => n -> Double
+integralSquareRoot = tr "sqrt" . sqrt . fromIntegral
+
+
+primeFactors :: (Integral n, Show n) => n -> FactorSet
+primeFactors n =
+    let limit :: (Integral n, Show n) => n
+        limit = tr "limit" . ceiling $ integralSquareRoot n
+
+        candidates = tr "candidates" $ takeWhile (<= limit) primes
+
+        divisor x = case n `divMod` x of
+            (q,0) -> First $ Just (x,q)
+            _     -> First Nothing
+
+        one :: Word8
+        one = 1
+
+    in  case tr "getFirst" . getFirst $ foldMap divisor candidates of
+            Nothing    -> tr "primeFactors -> Nothing" $ setFactoredPower n one
+            Just (p,1) -> tr "primeFactors -> Just(1)" $ setFactoredPower p one
+            Just (p,q) -> (tr "primeFactors -> Just(_)" $ setFactoredPower p one) <> primeFactors q 
+
+
+primes :: (Enum p, Num p, Ord p) => [p]
+primes =
+    let primes' :: (Enum n, Num n, Ord n) => [n]
+        primes' = 2:([ 3 .. ] `minus` composites)
+          where
+            composites = union [ multiples p | p <- primes' ]
+
+        multiples :: (Enum n, Num n) => n -> [n]
+        multiples n = (n *) <$> [ n .. ]
+
+        minus :: Ord a => [a] -> [a] -> [a]
+        minus = \case
+            []    -> const []
+            x:xs -> \case
+                []    -> x:xs
+                y:ys -> case x `compare` y of
+                    LT -> x:(xs  `minus` (y:ys))
+                    EQ ->    xs  `minus`    ys
+                    GT -> (x:xs) `minus`    ys
+
+        union :: Ord a => [[a]] -> [a]
+        union =
+            let merge = \case
+                    []    -> id
+                    x:xs -> \ys -> x:merge' xs ys
+
+                merge' = \case
+                    [] -> id
+                    x:xs -> \case
+                        []    -> x:xs
+                        y:ys -> case x `compare` y of
+                            LT -> x:merge'    xs (y:ys)
+                            EQ -> x:merge'    xs    ys
+                            GT -> y:merge' (x:xs)   ys
+            in  foldr merge mempty
+
+    in primes'

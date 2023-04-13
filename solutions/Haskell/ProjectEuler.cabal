@@ -1,8 +1,5 @@
 cabal-version: 3.8
 name:                ProjectEuler
--- PVP summary:      +-+------- breaking API changes
---                   | | +----- non-breaking API additions
---                   | | | +--- code changes with no API change
 version:             0.1.0.0
 synopsis:            Solutions to the Project Euler problem set
 description:         Solutions to the Project Euler problem set
@@ -92,3 +89,51 @@ Library p0205
   exposed-modules:
 --    ProjectEuler.Problem_0205
     ProjectEuler.Problem_0205.Solution
+
+
+Executable s0206
+
+  build-depends:
+    base >=4.7,
+    containers,
+
+  ghc-options:
+    -O2 -Wall -Werror
+    -fwarn-duplicate-exports
+    -fwarn-incomplete-patterns
+    -fwarn-missing-signatures
+    -fwarn-overlapping-patterns
+    -fwarn-tabs
+    -fwarn-unused-binds
+    -fwarn-unused-do-bind
+    -fwarn-unused-imports
+    -fwarn-unused-matches
+
+  main-is:
+    ProjectEuler/Problem_0206.hs
+
+  other-modules:
+    ProjectEuler.Problem_0206.Solution
+
+
+
+Library p0206
+
+  build-depends:
+    base >=4.7,
+    containers,
+
+  ghc-options:
+    -O2 -Wall -Werror
+    -fwarn-duplicate-exports
+    -fwarn-incomplete-patterns
+    -fwarn-missing-signatures
+    -fwarn-overlapping-patterns
+    -fwarn-tabs
+    -fwarn-unused-binds
+    -fwarn-unused-do-bind
+    -fwarn-unused-imports
+    -fwarn-unused-matches
+
+  exposed-modules:
+    ProjectEuler.Problem_0206.Solution
