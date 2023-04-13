@@ -213,13 +213,14 @@ instance Show FactorSet where
 
     show fs@(FactorSet im) =
         let numStr key val = [ (show key, showPower $ val `div` 2) ]
+            squareSuffix = (<> "²")
             encloseStr = \case
                 [] -> ""
-                [(x,"")] -> x <> "²"
+                [(x,"")] -> squareSuffix x
                 xs  -> "(" <> intercalate " * " (uncurry (<>) <$> xs) <> ")²"
             factorsStr = encloseStr . foldMapWithKey numStr
             productStr = show . getFactoredComposite
-            squaredStr = show . getFactoredSquareRoot
+            squaredStr = squareSuffix . show . getFactoredSquareRoot
             showPower pow
                 | pow <= 1  = ""
                 | otherwise = showDigit <$> show pow

@@ -75,7 +75,8 @@ Library p0205
     multiset,
 
   ghc-options:
-    -O2 -Wall -Werror
+    -Wall
+    -Werror
     -fwarn-duplicate-exports
     -fwarn-incomplete-patterns
     -fwarn-missing-signatures
@@ -98,23 +99,13 @@ Executable s0206
     containers,
 
   ghc-options:
-    -O2 -Wall -Werror
-    -fwarn-duplicate-exports
-    -fwarn-incomplete-patterns
-    -fwarn-missing-signatures
-    -fwarn-overlapping-patterns
-    -fwarn-tabs
-    -fwarn-unused-binds
-    -fwarn-unused-do-bind
-    -fwarn-unused-imports
-    -fwarn-unused-matches
+    -O2
 
   main-is:
     ProjectEuler/Problem_0206.hs
 
   other-modules:
     ProjectEuler.Problem_0206.Solution
-
 
 
 Library p0206
@@ -124,7 +115,9 @@ Library p0206
     containers,
 
   ghc-options:
-    -O2 -Wall -Werror
+    -O2
+    -Wall
+    -Werror
     -fwarn-duplicate-exports
     -fwarn-incomplete-patterns
     -fwarn-missing-signatures
