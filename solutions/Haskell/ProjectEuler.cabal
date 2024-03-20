@@ -130,3 +130,35 @@ Library p0206
 
   exposed-modules:
     ProjectEuler.Problem_0206.Solution
+
+
+Library p0808
+
+  build-depends:
+    arithmoi >= 0.13.0.0,
+    base >=4.7,
+    containers,
+    integer-roots,
+
+  default-extensions:
+    DerivingStrategies
+
+  default-language:
+    GHC2021
+
+  ghc-options:
+    -O2
+    -Wall
+--    -Werror
+    -fwarn-duplicate-exports
+    -fwarn-incomplete-patterns
+    -fwarn-missing-signatures
+    -fwarn-overlapping-patterns
+    -fwarn-tabs
+    -fwarn-unused-binds
+    -fwarn-unused-do-bind
+    -fwarn-unused-imports
+    -fwarn-unused-matches
+
+  exposed-modules:
+    ProjectEuler.Problem_0808.Solution
