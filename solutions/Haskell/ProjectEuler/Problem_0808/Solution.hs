@@ -105,7 +105,9 @@ queryPrime p (PrimeSet ps) =
 
 
 takeReversiblePrimeSquare :: ReversiblePrimeSquare -> Natural
-takeReversiblePrimeSquare = unPrime . coerce
+takeReversiblePrimeSquare (RPS p) =
+    let rps = unPrime p
+    in  rps * rps
 
  
 makeReversiblePrimeSquare :: Prime Natural -> Maybe ReversiblePrimeSquare
