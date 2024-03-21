@@ -9,7 +9,7 @@
 
 module ProjectEuler.Problem_0231.Solution
   ( -- * Data types
-    -- ** Reversible Prime Square
+    -- ** Binomial Coefficient
     BinomialCoefficient()
   , choose
   , expand

@@ -146,6 +146,19 @@ Library p0231
     ProjectEuler.Problem_0231.Solution
 
 
+Library p0684
+
+  import:
+    build-defaults
+
+  build-depends:
+    arithmoi >= 0.13.0.0,
+    base >=4.7,
+
+  exposed-modules:
+    ProjectEuler.Problem_0684.Solution
+
+
 Library p0808
 
   import:
