@@ -13,8 +13,37 @@ category:            Math
 build-type:          Simple
 
 
+common build-defaults
+
+  default-extensions:
+    DerivingStrategies
+
+  default-language:
+    GHC2021
+
+  ghc-options:
+    -O2
+    -Wall
+--    -Werror
+    -fwarn-duplicate-exports
+    -fwarn-incomplete-patterns
+    -fwarn-missing-signatures
+    -fwarn-overlapping-patterns
+    -fwarn-tabs
+    -fwarn-unused-binds
+    -fwarn-unused-do-bind
+    -fwarn-unused-imports
+    -fwarn-unused-matches
+
+
 executable euler
-  main-is:	Main.hs
+
+  import:
+    build-defaults
+
+  main-is:
+    Main.hs
+
   -- Other library packages from which modules are imported.
   build-depends:
     arithmoi >=0.4.2,
@@ -26,18 +55,6 @@ executable euler
     regex-base,
     safe,
     vector,
-
-  ghc-options:
-    -O2 -Wall -Werror
-    -fwarn-duplicate-exports
-    -fwarn-incomplete-patterns
-    -fwarn-missing-signatures
-    -fwarn-overlapping-patterns
-    -fwarn-tabs
-    -fwarn-unused-binds
-    -fwarn-unused-do-bind
-    -fwarn-unused-imports
-    -fwarn-unused-matches
 
   other-modules:
     ProjectEuler
@@ -57,15 +74,20 @@ executable euler
 
 
 Test-Suite euler-testsuite
-  type:   	 exitcode-stdio-1.0
-  main-is: 	 TestSuite.hs
-  build-depends: base >=4.7
-               , containers ==0.5.*
-               , QuickCheck
-
+  type:
+    exitcode-stdio-1.0
+  main-is:
+    TestSuite.hs
+  build-depends:
+    base >=4.7,
+    containers >= 0.5,
+    QuickCheck,
 
 
 Library p0205
+
+  import:
+    build-defaults
 
   build-depends:
     arithmoi >=0.4.2,
@@ -74,25 +96,15 @@ Library p0205
     containers,
     multiset,
 
-  ghc-options:
-    -Wall
-    -Werror
-    -fwarn-duplicate-exports
-    -fwarn-incomplete-patterns
-    -fwarn-missing-signatures
-    -fwarn-overlapping-patterns
-    -fwarn-tabs
-    -fwarn-unused-binds
-    -fwarn-unused-do-bind
-    -fwarn-unused-imports
-    -fwarn-unused-matches
-
   exposed-modules:
 --    ProjectEuler.Problem_0205
     ProjectEuler.Problem_0205.Solution
 
 
 Executable s0206
+
+  import:
+    build-defaults
 
   build-depends:
     base >=4.7,
@@ -110,23 +122,12 @@ Executable s0206
 
 Library p0206
 
+  import:
+    build-defaults
+
   build-depends:
     base >=4.7,
     containers,
-
-  ghc-options:
-    -O2
-    -Wall
-    -Werror
-    -fwarn-duplicate-exports
-    -fwarn-incomplete-patterns
-    -fwarn-missing-signatures
-    -fwarn-overlapping-patterns
-    -fwarn-tabs
-    -fwarn-unused-binds
-    -fwarn-unused-do-bind
-    -fwarn-unused-imports
-    -fwarn-unused-matches
 
   exposed-modules:
     ProjectEuler.Problem_0206.Solution
@@ -134,31 +135,12 @@ Library p0206
 
 Library p0231
 
+  import:
+    build-defaults
+
   build-depends:
     arithmoi >= 0.13.0.0,
     base >=4.7,
---    containers,
---    integer-roots,
-
-  default-extensions:
-    DerivingStrategies
-
-  default-language:
-    GHC2021
-
-  ghc-options:
-    -O2
-    -Wall
---    -Werror
-    -fwarn-duplicate-exports
-    -fwarn-incomplete-patterns
-    -fwarn-missing-signatures
-    -fwarn-overlapping-patterns
-    -fwarn-tabs
-    -fwarn-unused-binds
-    -fwarn-unused-do-bind
-    -fwarn-unused-imports
-    -fwarn-unused-matches
 
   exposed-modules:
     ProjectEuler.Problem_0231.Solution
@@ -166,31 +148,14 @@ Library p0231
 
 Library p0808
 
+  import:
+    build-defaults
+
   build-depends:
     arithmoi >= 0.13.0.0,
     base >=4.7,
     containers,
     integer-roots,
-
-  default-extensions:
-    DerivingStrategies
-
-  default-language:
-    GHC2021
-
-  ghc-options:
-    -O2
-    -Wall
---    -Werror
-    -fwarn-duplicate-exports
-    -fwarn-incomplete-patterns
-    -fwarn-missing-signatures
-    -fwarn-overlapping-patterns
-    -fwarn-tabs
-    -fwarn-unused-binds
-    -fwarn-unused-do-bind
-    -fwarn-unused-imports
-    -fwarn-unused-matches
 
   exposed-modules:
     ProjectEuler.Problem_0808.Solution
