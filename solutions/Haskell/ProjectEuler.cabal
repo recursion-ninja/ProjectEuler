@@ -154,6 +154,8 @@ Library p0684
   build-depends:
     arithmoi >= 0.13.0.0,
     base >=4.7,
+    modular-arithmetic,
+    typelits-witnesses,
 
   exposed-modules:
     ProjectEuler.Problem_0684.Solution
